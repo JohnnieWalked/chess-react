@@ -1,0 +1,7 @@
+svg {
+    pointer-events: none;
+}
+
+span {
+    display: none;
+}
