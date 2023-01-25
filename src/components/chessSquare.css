@@ -5,3 +5,14 @@ svg {
 span {
     display: none;
 }
+
+.dot:before {
+    position: absolute;
+    content: "";
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    opacity: .5;
+    background-color: darkslateblue;
+
+}
