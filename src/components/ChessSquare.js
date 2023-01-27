@@ -10,7 +10,7 @@ function ChessSquare({ square, id, showPossibleWaysClass }) {
         <div 
         className={`
             w-12 h-12 flex items-center justify-center relative
-            ${square.c === 0 ? 'bg-amber-200' : 'bg-amber-700'} 
+            ${square.c === 0 ? 'bg-[#788592]' : 'bg-[#1C2033]'} 
             ${showPossibleWaysClass.length != 0 ? 'dot' : ''}
             `}
         id={id}>

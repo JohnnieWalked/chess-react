@@ -1,15 +1,16 @@
 import useChessContext from "../hooks/use-chess-context";
 import ChessSquare from "./ChessSquare";
 import "./chessBoard.css";
+import { useEffect } from "react";
 
 function ChessBoard() {
-    const {board, pieceID, setPieceID, setPieceName, showPossibleWays, movePiece, clearState} = useChessContext();
+    const {board, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState} = useChessContext();
 
-    /* Отримує компонент клітинки та відповідає за її рух*/
+    /* Отримує компонент клітинки та відповідає за її рух, а також дозволяє відмінити хід*/
     const getPiece = (chessPiece) => {
         if (pieceID === "" && chessPiece.firstChild.innerHTML === "") return;
+        if (pieceID != "" && chessPiece.firstChild.innerHTML === "") clearState();
         if (chessPiece.classList.contains("dot")) movePiece(chessPiece.id);
-
         setPieceID(chessPiece.id);
         setPieceName(chessPiece.firstChild.innerHTML);
     };
@@ -21,7 +22,7 @@ function ChessBoard() {
 
     const renderBoard = board.map((item, rowIndex) => {
         return (
-            <div className="grid grid-cols-8 justify-items-center relative" 
+            <div className="grid grid-cols-8 relative" 
             key={rowIndex} 
             onClick={(e) => getPiece(e.target)}> 
                 {item.map((square, colIndex) => {

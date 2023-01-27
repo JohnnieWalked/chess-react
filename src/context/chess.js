@@ -72,18 +72,18 @@ function Provider({ children }) {
         selectionAlgorithm(pieceName, pieceID);      
     }, [pieceName, pieceID]);
 
-    useEffect(() => {
-        clearState();
-    }, [board])
-
     function clearState() {
         setPieceID('');
         setPieceName('');
         setShowPossibleWays([]);
     }
 
+    useEffect(() => {
+        clearState();
+    }, [board])
+
     return (
-        <ChessContext.Provider value={{board, setBoard, pieceID, setPieceID, setPieceName, selectionAlgorithm, showPossibleWays, movePiece, clearState}}>
+        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, selectionAlgorithm, showPossibleWays, movePiece, clearState}}>
             {children}
         </ChessContext.Provider>
     )
