@@ -3,7 +3,7 @@ import ChessSquare from "./ChessSquare";
 import "./chessBoard.css";
 
 function ChessBoard() {
-    const {board, pieceID, setPieceID, setPieceName, showPossibleWays, movePiece} = useChessContext();
+    const {board, pieceID, setPieceID, setPieceName, showPossibleWays, movePiece, clearState} = useChessContext();
 
     /* Отримує компонент клітинки та відповідає за її рух*/
     const getPiece = (chessPiece) => {
@@ -13,8 +13,6 @@ function ChessBoard() {
         setPieceID(chessPiece.id);
         setPieceName(chessPiece.firstChild.innerHTML);
     };
-
-    /* Відповідає за рух фігури */
 
     /* Приймає масив з числами, які вказують на можливі рухи фігури та сортує по клітинкам, які в подальшому будуть підсвічуватися */
     function addLabelForClass(id, showPossibleWays) {

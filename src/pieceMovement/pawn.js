@@ -4,57 +4,43 @@ function pawn(item, xy, board) {
     const axisY = Number(xy[1]);
 
     /* хід через 1 клітинку */
-    if (item === 'P' && axisX === 1) {
+    if (item === 'P' && axisX === 1 && board[axisX + 1][axisY].f === "" && board[axisX + 2][axisY].f === "") {
         possiblePawnMovement.push(`${axisX + 2}${axisY}`);
-    } else if (item === 'p' && axisX === 6) {
+    } else if (item === 'p' && axisX === 6 && board[axisX - 1][axisY].f === "" && board[axisX - 2][axisY].f === "") {
         possiblePawnMovement.push(`${axisX - 2}${axisY}`);
     }
 
-    /* хід на 1 клітинку */
+    /* перевірка на можливість нанесення удару */
+    function attackMove(pieceName, parameterX, parameterY, reg) {
+        return item === pieceName 
+            && board[axisX + parameterX][axisY + parameterY] != undefined 
+            && reg.test(board[axisX + parameterX][axisY + parameterY].f);
+    }
+
+    if (attackMove('P', 1, 1, /[a-z]/)) possiblePawnMovement.push(`${axisX + 1}${axisY + 1}`); 
+    if (attackMove('P', 1, -1, /[a-z]/)) possiblePawnMovement.push(`${axisX + 1}${axisY - 1}`);
+
+    if (attackMove('p', -1, 1, /[A-Z]/)) possiblePawnMovement.push(`${axisX - 1}${axisY + 1}`);
+    if (attackMove('p', -1, -1, /[A-Z]/)) possiblePawnMovement.push(`${axisX - 1}${axisY - 1}`);
+
+    /* хід на 1 клітинку */ 
     /* перевірка на перешкоду попереду */
+    function checkPossibleBarrier(parameterX) {
+        if (board[axisX + parameterX][axisY].f != "") {
+            possiblePawnMovement = possiblePawnMovement.filter(item => item != `${axisX + parameterX}${axisY}`);
+        }
+        return possiblePawnMovement;
+    }
+
     if (item === 'P') {
         possiblePawnMovement.push(`${axisX + 1}${axisY}`);
-        possiblePawnMovement = checkPossibleBarrierWhite(axisX, axisY, board, possiblePawnMovement);
+        possiblePawnMovement = checkPossibleBarrier(1);
     } else if (item === 'p') {
         possiblePawnMovement.push(`${axisX - 1}${axisY}`);
-        console.log(possiblePawnMovement);
-        possiblePawnMovement = checkPossibleBarrierBlack(axisX, axisY, board, possiblePawnMovement);
-        console.log(possiblePawnMovement);
+        possiblePawnMovement = checkPossibleBarrier(-1);
     }
 
-    return possiblePawnMovement;
-}
-
-function checkPossibleBarrierWhite(axisX, axisY, board, possiblePawnMovement, i = 1) {
-    while (i < 3) {
-        if (board[axisX + i][axisY].f === "") {
-            console.log(`${axisX + i}${axisY} is a possible move`);
-            console.log(possiblePawnMovement);
-        } else if (board[axisX + i][axisY].f != "") {
-            possiblePawnMovement = []; 
-            break;
-        } else {
-            possiblePawnMovement = possiblePawnMovement.filter(item => item != `${axisX + i}${axisY}`);
-        }
-        i++;
-    }
-    return possiblePawnMovement;
-}
-
-function checkPossibleBarrierBlack(axisX, axisY, board, possiblePawnMovement, i = -1) {
-    while (i > -3) {
-        if (board[axisX - (-i)][axisY].f === "") {
-            console.log(`${axisX - (-i)}${axisY} is a possible move`);
-            console.log(possiblePawnMovement);
-        } else if (board[axisX - (-i)][axisY].f != "") {
-            possiblePawnMovement = []; 
-            break;
-        } else {
-            possiblePawnMovement = possiblePawnMovement.filter(item => item != `${axisX - (-i)}${axisY}`);
-        }
-        i--;
-    }
-    return possiblePawnMovement;
+    return possiblePawnMovement
 }
 
 export default pawn;

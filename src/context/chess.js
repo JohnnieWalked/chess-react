@@ -64,14 +64,17 @@ function Provider({ children }) {
         let newBoard = JSON.parse(JSON.stringify([...board]));
         newBoard[newAxisX][newAxisY].f = newBoard[oldAxisX][oldAxisY].f;
         newBoard[oldAxisX][oldAxisY].f = '';
-        
+
         setBoard(newBoard);
-        clearState();
     }
 
     useEffect(() => {
-        selectionAlgorithm(pieceName, pieceID);        
+        selectionAlgorithm(pieceName, pieceID);      
     }, [pieceName, pieceID]);
+
+    useEffect(() => {
+        clearState();
+    }, [board])
 
     function clearState() {
         setPieceID('');
@@ -80,7 +83,7 @@ function Provider({ children }) {
     }
 
     return (
-        <ChessContext.Provider value={{board, setBoard, pieceID, setPieceID, setPieceName, selectionAlgorithm, showPossibleWays, movePiece}}>
+        <ChessContext.Provider value={{board, setBoard, pieceID, setPieceID, setPieceName, selectionAlgorithm, showPossibleWays, movePiece, clearState}}>
             {children}
         </ChessContext.Provider>
     )
