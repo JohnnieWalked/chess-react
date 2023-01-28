@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import pawn from "../pieceMovement/pawn";
+import knight from "../pieceMovement/knight";
 
 const ChessContext = createContext();
 
@@ -43,7 +44,7 @@ function Provider({ children }) {
         switch (temp) {
             case 'p': console.log(pawn(item, xy, board)); setShowPossibleWays((pawn(item, xy, board))); break;
             case 'r': console.log("gonna use function", temp); break;
-            case 'n': console.log("gonna use function", temp); break;
+            case 'n': console.log((knight(item, xy, board))); setShowPossibleWays((knight(item, xy, board))); break;
             case 'b': console.log("gonna use function", temp); break;
             case 'q': console.log("gonna use function", temp); break;
             case 'k': console.log("gonna use function", temp); break;

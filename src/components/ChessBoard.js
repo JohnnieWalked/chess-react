@@ -1,7 +1,6 @@
 import useChessContext from "../hooks/use-chess-context";
 import ChessSquare from "./ChessSquare";
 import "./chessBoard.css";
-import { useEffect } from "react";
 
 function ChessBoard() {
     const {board, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState} = useChessContext();
