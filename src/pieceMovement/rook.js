@@ -1,14 +1,6 @@
 import { checkPossibleMove } from "../utils/piece-movement-helper";
 
-/* 
-    Частина функціоналу була взята з функції руху фігури "Кінь". 
-    Проте тут є свої нюанси. 
-
-    Перевіркою на можливий рух слона є вічний цикл, який буде зупинятися після виявлення кінця поля та ідентифікації ворожої фігури. 
-
-*/
-
-function bishop(item, xy, board) {
+function rook(item, xy, board) {
     let possibleMovement = [];
     const axisX = Number(xy[0]);
     const axisY = Number(xy[1]);
@@ -18,7 +10,7 @@ function bishop(item, xy, board) {
     }
 
     const pushMove = (parameterX, parameterY) => {
-        if (item === "B" && checkPossibleMove(parameterX, parameterY, board, axisX, axisY, /[A-Z]/)) {
+        if (item === "R" && checkPossibleMove(parameterX, parameterY, board, axisX, axisY, /[A-Z]/)) {
             if (/[a-z]/.test(board[axisX + parameterX][axisY + parameterY].f)) {
                 pushMoveHelper(parameterX, parameterY);
                 return false;
@@ -27,7 +19,7 @@ function bishop(item, xy, board) {
             }
         } 
         
-        else if (item === "b" && checkPossibleMove(parameterX, parameterY, board, axisX, axisY, /[a-z]/)) {
+        else if (item === "r" && checkPossibleMove(parameterX, parameterY, board, axisX, axisY, /[a-z]/)) {
             if (/[A-Z]/.test(board[axisX + parameterX][axisY + parameterY].f)) {
                 pushMoveHelper(parameterX, parameterY);
                 return false;
@@ -41,47 +33,44 @@ function bishop(item, xy, board) {
         }
     }
 
-    const loopLeftTop = (x = -1, y = -1) => {
+    const loopTop = (x = 0, y = -1) => {
         while (true) {
             let res = pushMove(x, y);
             if (res === false) break;
-            x--;
             y--;
         }
     }
-    loopLeftTop();
+    loopTop();
 
-    const loopRightTop = (x = 1, y = -1) => {
+    const loopRight = (x = 1, y = 0) => {
         while (true) {
             let res = pushMove(x, y);
             if (res === false) break;
             x++;
-            y--;
         }
     }
-    loopRightTop();
+    loopRight();
 
-    const loopLeftBottom = (x = -1, y = 1) => {
+    const loopBottom = (x = 0, y = 1) => {
+        while (true) {
+            let res = pushMove(x, y);
+            if (res === false) break;
+            y++;
+        }
+    }
+    loopBottom();
+
+    const loopLeft = (x = -1, y = 0) => {
         while (true) {
             let res = pushMove(x, y);
             if (res === false) break;
             x--;
-            y++;
         }
     }
-    loopLeftBottom();
+    loopLeft();
 
-    const loopRightBottom = (x = 1, y = 1) => {
-        while (true) {
-            let res = pushMove(x, y);
-            if (res === false) break;
-            x++;
-            y++;
-        }
-    }
-    loopRightBottom();
 
     return possibleMovement;
 }
 
-export default bishop;
+export default rook;

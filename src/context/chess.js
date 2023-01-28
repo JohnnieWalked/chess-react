@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import pawn from "../pieceMovement/pawn";
 import knight from "../pieceMovement/knight";
 import bishop from "../pieceMovement/bishop";
+import rook from "../pieceMovement/rook";
 
 const ChessContext = createContext();
 
@@ -44,7 +45,7 @@ function Provider({ children }) {
         let temp = item.toLowerCase();
         switch (temp) {
             case 'p': console.log(pawn(item, xy, board)); setShowPossibleWays((pawn(item, xy, board))); break;
-            case 'r': console.log("gonna use function", temp); break;
+            case 'r': console.log((rook(item, xy, board))); setShowPossibleWays((rook(item, xy, board))); break;
             case 'n': console.log((knight(item, xy, board))); setShowPossibleWays((knight(item, xy, board))); break;
             case 'b': console.log(bishop(item, xy, board)); setShowPossibleWays((bishop(item, xy, board)));break;
             case 'q': console.log("gonna use function", temp); break;

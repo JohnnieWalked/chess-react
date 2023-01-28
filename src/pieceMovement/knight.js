@@ -1,3 +1,4 @@
+import { checkPossibleMove } from "../utils/piece-movement-helper";
 /* 
     Функціонал наступний: 
     1) knight() приймає наступні аргументи:
@@ -16,20 +17,10 @@ function knight(item, xy, board) {
     const axisX = Number(xy[0]);
     const axisY = Number(xy[1]);    
 
-    const checkPossibleMoveForWhite = (parameterX, parameterY) => {
-        return board[axisX + parameterX] && board[axisY + parameterY] != undefined 
-               && !/[A-Z]/.test(board[axisX + parameterX][axisY + parameterY].f);
-    }
-
-    const checkPossibleMoveForBlack = (parameterX, parameterY) => {
-        return board[axisX + parameterX] && board[axisY + parameterY] != undefined
-              && !/[a-z]/.test(board[axisX + parameterX][axisY + parameterY].f);
-    }
-
     const pushMove = (parameterX, parameterY) => {
-        if (item === "N" && checkPossibleMoveForWhite(parameterX, parameterY)) {
+        if (item === "N" && checkPossibleMove(parameterX, parameterY, board, axisX, axisY, /[A-Z]/)) {
             possibleMovement.push(`${axisX + parameterX}${axisY + parameterY}`);
-        } else if (item === "n" && checkPossibleMoveForBlack(parameterX, parameterY)) {
+        } else if (item === "n" && checkPossibleMove(parameterX, parameterY, board, axisX, axisY, /[a-z]/)) {
             possibleMovement.push(`${axisX + parameterX}${axisY + parameterY}`);
         }
     }
