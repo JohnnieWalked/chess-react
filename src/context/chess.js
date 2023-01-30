@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import pawn from "../pieceMovement/pawn";
 import knight from "../pieceMovement/knight";
 import bishop from "../pieceMovement/bishop";
@@ -8,9 +8,8 @@ import queen from "../pieceMovement/queen";
 const ChessContext = createContext();
 
 function Provider({ children }) {
-    /* шахматне поле (білі - літери з великої букви, чорні - з маленької букви) */
-    /* Перший параметр - рядок, другий - колонка */
-    // console.log(board[0][0]);
+    /* chess field (white - capital letters, black - small) */
+    /* First parameter - row, second - column */
     const [board, setBoard] = useState([
         [{c: 0, f: 'R'}, {c: 1, f: 'N'}, {c: 0, f: 'B'}, {c: 1, f: 'K'},
         {c: 0, f: 'Q'}, {c: 1, f: 'B'}, {c: 0, f: 'N'}, {c: 1, f: 'R'}],
@@ -32,23 +31,23 @@ function Provider({ children }) {
         {c: 1, f: 'q'}, {c: 0, f: 'b'}, {c: 1, f: 'n'}, {c: 0, f: 'r'}],
     ]);
 
-    /* Відповідає за показ ймовірних шляхів */
+    /* Responsible for showing possible paths */
     const [showPossibleWays, setShowPossibleWays] = useState([]);
     
-    /* Відповідає за порядок руху гравців (істина - білі, хибний - чорні) */
+    /* Responsible for the order of movement of players (true - white's, false - black's) */
     const [order, setOrder] = useState(true);
 
-    /* Відповідає за вибір фігури у клітинці */
+    /* Responsible for selecting the figure in the square */
     const [pieceID, setPieceID] = useState('');
     const [pieceName, setPieceName] = useState('');
 
-    const selectionAlgorithm = (item, xy) => {
+    const algorithmSelection = (item, xy) => {
         let temp = item.toLowerCase();
         switch (temp) {
             case 'p': console.log(pawn(item, xy, board)); setShowPossibleWays((pawn(item, xy, board))); break;
             case 'r': console.log((rook(item, xy, board))); setShowPossibleWays((rook(item, xy, board))); break;
             case 'n': console.log((knight(item, xy, board))); setShowPossibleWays((knight(item, xy, board))); break;
-            case 'b': console.log(bishop(item, xy, board)); setShowPossibleWays((bishop(item, xy, board)));break;
+            case 'b': console.log(bishop(item, xy, board)); setShowPossibleWays((bishop(item, xy, board))); break;
             case 'q': console.log(queen(item, xy, board)); setShowPossibleWays((queen(item, xy, board))); break;
             case 'k': console.log("gonna use function", temp); break;
         }
@@ -60,21 +59,17 @@ function Provider({ children }) {
               newAxisX = chessPieceID[0],
               newAxisY = chessPieceID[1];
 
-        // console.log("oldAxisX - ", oldAxisX);
-        // console.log("oldAxisY - ", oldAxisY);
-        // console.log("newAxisX - ", newAxisX);
-        // console.log("newAxisY - ", newAxisY);
-
         let newBoard = JSON.parse(JSON.stringify([...board]));
         newBoard[newAxisX][newAxisY].f = newBoard[oldAxisX][oldAxisY].f;
         newBoard[oldAxisX][oldAxisY].f = '';
 
         setBoard(newBoard);
+        setOrder(!order);
     }
 
     useEffect(() => {
-        selectionAlgorithm(pieceName, pieceID);      
-    }, [pieceName, pieceID]);
+        algorithmSelection(pieceName, pieceID);
+    }, [pieceName, pieceID])
 
     function clearState() {
         setPieceID('');
@@ -84,10 +79,10 @@ function Provider({ children }) {
 
     useEffect(() => {
         clearState();
-    }, [board])
+    }, [board]);
 
     return (
-        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, selectionAlgorithm, showPossibleWays, movePiece, clearState}}>
+        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order}}>
             {children}
         </ChessContext.Provider>
     )

@@ -3,18 +3,21 @@ import ChessSquare from "./ChessSquare";
 import "./chessBoard.css";
 
 function ChessBoard() {
-    const {board, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState} = useChessContext();
+    const {board, pieceID, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order} = useChessContext();
 
-    /* Отримує компонент клітинки та відповідає за її рух, а також дозволяє відмінити хід*/
+    /* Gets the square component and is responsible for its movement, also allows you to cancel the move and responsible for player's order */
     const getPiece = (chessPiece) => {
-        if (pieceID === "" && chessPiece.firstChild.innerHTML === "") return;
-        if (pieceID != "" && chessPiece.firstChild.innerHTML === "") clearState();
+        let pieceTargetName = chessPiece.firstChild.innerHTML;
+        if (pieceID === "" && pieceTargetName === "") return;
+        if (pieceID != "" && pieceTargetName === "") clearState(); 
         if (chessPiece.classList.contains("dot")) movePiece(chessPiece.id);
+        if (order && /[a-z]/.test(pieceTargetName)) return /* alert('Wait for white move...') */; 
+        if (!order && /[A-Z]/.test(pieceTargetName)) return /* alert('Wait for white move...') */;
         setPieceID(chessPiece.id);
-        setPieceName(chessPiece.firstChild.innerHTML);
+        setPieceName(pieceTargetName);
     };
 
-    /* Приймає масив з числами, які вказують на можливі рухи фігури та сортує по клітинкам, які в подальшому будуть підсвічуватися */
+    /* Accepts an array with numbers that indicate the possible movements of the figure and sorts by squares, which will be highlighted in the future */
     function addLabelForClass(id, showPossibleWays) {
         return showPossibleWays.filter(item => item === id)
     }

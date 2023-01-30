@@ -1,87 +1,52 @@
-import { checkPossibleMove } from "../utils/piece-movement-helper";
-
-/* 
-    Частина функціоналу була взята з функції руху фігури "Кінь". 
-    Проте тут є свої нюанси. 
-
-    Перевіркою на можливий рух слона є вічний цикл, який буде зупинятися після виявлення кінця поля та ідентифікації ворожої фігури. 
-
-*/
+import moveHelper from "../utils/piece-movement-helper";
 
 function bishop(item, xy, board) {
     let possibleMovement = [];
     const axisX = Number(xy[0]);
     const axisY = Number(xy[1]);
 
-    const pushMoveHelper = (parameterX, parameterY) => {
-        possibleMovement.push(`${axisX + parameterX}${axisY + parameterY}`);
-    }
-
-    const pushMove = (parameterX, parameterY) => {
-        if (item === "B" && checkPossibleMove(parameterX, parameterY, board, axisX, axisY, /[A-Z]/)) {
-            if (/[a-z]/.test(board[axisX + parameterX][axisY + parameterY].f)) {
-                pushMoveHelper(parameterX, parameterY);
-                return false;
-            } else {
-                pushMoveHelper(parameterX, parameterY);
-            }
-        } 
-        
-        else if (item === "b" && checkPossibleMove(parameterX, parameterY, board, axisX, axisY, /[a-z]/)) {
-            if (/[A-Z]/.test(board[axisX + parameterX][axisY + parameterY].f)) {
-                pushMoveHelper(parameterX, parameterY);
-                return false;
-            } else {
-                pushMoveHelper(parameterX, parameterY);
-            }
-        } 
-        
-        else {
-            return false;
-        }
-    }
-
-    const loopLeftTop = (x = -1, y = -1) => {
+/* 
+    The checking for the possible movement of the bishop is an eternal loop, which will stop only when the end of the field is detected or the enemy piece is identified.
+    
+    moveHelper() is a function that returns an object:
+    const obj = {
+            possibleMove: '',   --> resposible for keeping the possible move value.
+            loop: true          --> responsible for parameter, that will break loop.
+        };
+    
+    So, function loop() generates an array called 'res'. After that it creates an eternal loop, where variable 'temp' is a work result of function moveHelper(). 
+    As far as we receive an object mentioned above, we take value from 'temp.possibleMove' (the value can be an empty string "" or a string with digits "64" which represents a possible move) and push it to the array called 'res' and change the shift of X and Y. And that operation repeats until we receive 'temp.loop = false'. 
+    After all we return our variable 'res' which will contain an array of possible movements.
+    
+*/
+    const loop = (shiftX, shiftY) => {
+        let res = [];
         while (true) {
-            let res = pushMove(x, y);
-            if (res === false) break;
-            x--;
-            y--;
+            let temp = moveHelper(item, axisX, axisY, board, shiftX, shiftY);
+            res.push(temp.possibleMove);
+            if (temp.loop === false) return res;
+            if (shiftX < 0) shiftX--;
+            if (shiftX > 0) shiftX++;
+            if (shiftY < 0) shiftY--;
+            if (shiftY > 0) shiftY++;
         }
     }
-    loopLeftTop();
 
-    const loopRightTop = (x = 1, y = -1) => {
-        while (true) {
-            let res = pushMove(x, y);
-            if (res === false) break;
-            x++;
-            y--;
-        }
-    }
-    loopRightTop();
+    console.log(loop(-1, -1));
 
-    const loopLeftBottom = (x = -1, y = 1) => {
-        while (true) {
-            let res = pushMove(x, y);
-            if (res === false) break;
-            x--;
-            y++;
-        }
-    }
-    loopLeftBottom();
+    /* Left Top Direction */
+    possibleMovement.push(loop(-1, -1));
 
-    const loopRightBottom = (x = 1, y = 1) => {
-        while (true) {
-            let res = pushMove(x, y);
-            if (res === false) break;
-            x++;
-            y++;
-        }
-    }
-    loopRightBottom();
+    /* Right Top */
+    possibleMovement.push(loop(1, -1));
+    
+    /* Left Bottom */
+    possibleMovement.push(loop(-1, 1));
 
-    return possibleMovement;
+    /* Right Bottom */
+    possibleMovement.push(loop(1, 1));
+
+    return possibleMovement.flat().filter(item => item != "");
 }
 
 export default bishop;

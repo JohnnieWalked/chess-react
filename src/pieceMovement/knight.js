@@ -1,15 +1,15 @@
 import { checkPossibleMove } from "../utils/piece-movement-helper";
 /* 
-    Функціонал наступний: 
-    1) knight() приймає наступні аргументи:
-        - фігуру, на яку ми клацнули, 
-        - її координати,
-        - актуальне значення шахматної дошки;
-        В принципі, кожна фігура буде приймати дані аргументи, тому цей крок для всіх однаковий.
+    The functionality is:
+     1) knight() accepts the following arguments:
+        - the figure we clicked on,
+        - its coordinates,
+        - actual value of the chessboard;
+        In principle, each figure will accept these arguments, so this step is the same for all.
 
-    2) логіка перевірки полягає в наступному:
-        - pushMove() - це основа, яка приймає до себе можливий хід коня. Тобто передаємо їй координати абсцис та ординат,
-        - якщо фігура в нас білого кольору та можливий рух коня не приймає значення undefined та не налазить на союзну фігуру - то ми пушимо можливий рух у масив possibleMovement. Так само і для чорних.
+    2) the logic of the check is:
+         - pushMove() is a base function that accepts the horse's possible move. We pass the abscissa and ordinate coordinates,
+         - if we have a white figure and the possible movement of the horse does not take the value 'undefined' and does not overlap with the allied figure - then we push the possible movement into the possibleMovement array. The same goes for blacks.
 */
 
 function knight(item, xy, board) {
@@ -24,12 +24,12 @@ function knight(item, xy, board) {
             possibleMovement.push(`${axisX + parameterX}${axisY + parameterY}`);
         }
     }
-    /* по осі Х */
+    /* Х axis */
     pushMove(2, 1);
     pushMove(2, -1);
     pushMove(-2, 1);
     pushMove(-2, -1);
-    /* по осі Y */
+    /* Y axis */
     pushMove(1, 2);
     pushMove(-1, 2);
     pushMove(1, -2);

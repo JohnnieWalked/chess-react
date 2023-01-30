@@ -3,14 +3,14 @@ function pawn(item, xy, board) {
     const axisX = Number(xy[0]);
     const axisY = Number(xy[1]);
 
-    /* хід через 1 клітинку */
+    /* move on 2 squares */
     if (item === 'P' && axisX === 1 && board[axisX + 1][axisY].f === "" && board[axisX + 2][axisY].f === "") {
         possibleMovement.push(`${axisX + 2}${axisY}`);
     } else if (item === 'p' && axisX === 6 && board[axisX - 1][axisY].f === "" && board[axisX - 2][axisY].f === "") {
         possibleMovement.push(`${axisX - 2}${axisY}`);
     }
 
-    /* перевірка на можливість нанесення удару */
+    /* check for attack move */
     function attackMove(pieceName, parameterX, parameterY, reg) {
         return item === pieceName 
             && board[axisX + parameterX][axisY + parameterY] != undefined 
@@ -23,8 +23,8 @@ function pawn(item, xy, board) {
     if (attackMove('p', -1, 1, /[A-Z]/)) possibleMovement.push(`${axisX - 1}${axisY + 1}`);
     if (attackMove('p', -1, -1, /[A-Z]/)) possibleMovement.push(`${axisX - 1}${axisY - 1}`);
 
-    /* хід на 1 клітинку */ 
-    /* перевірка на перешкоду попереду */
+    /* move on 1 square */ 
+    /* check for barrier ahead */
     function checkPossibleBarrier(parameterX) {
         if (board[axisX + parameterX][axisY].f != "") {
             possibleMovement = possibleMovement.filter(item => item != `${axisX + parameterX}${axisY}`);
