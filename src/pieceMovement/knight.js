@@ -1,4 +1,4 @@
-import { checkPossibleMove } from "../utils/piece-movement-helper";
+import { pushMove } from "../utils/piece-movement-helper";
 /* 
     The functionality is:
      1) knight() accepts the following arguments:
@@ -8,8 +8,8 @@ import { checkPossibleMove } from "../utils/piece-movement-helper";
         In principle, each figure will accept these arguments, so this step is the same for all.
 
     2) the logic of the check is:
-         - pushMove() is a base function that accepts the horse's possible move. We pass the abscissa and ordinate coordinates,
-         - if we have a white figure and the possible movement of the horse does not take the value 'undefined' and does not overlap with the allied figure - then we push the possible movement into the possibleMovement array. The same goes for blacks.
+        - pushMove() is a base function that accepts the horse's possible move. We pass the abscissa and ordinate coordinates, current state of a chessboard, shiftX and shiftY. This function returns a string of digit which represents a possible move of a piece.
+        - if we have a white figure and the possible movement of the horse does not take the value 'undefined' and does not overlap with the allied figure - then we push the possible movement into the possibleMovement array. The same goes for blacks.
 */
 
 function knight(item, xy, board) {
@@ -17,25 +17,20 @@ function knight(item, xy, board) {
     const axisX = Number(xy[0]);
     const axisY = Number(xy[1]);    
 
-    const pushMove = (parameterX, parameterY) => {
-        if (item === "N" && checkPossibleMove(parameterX, parameterY, board, axisX, axisY, /[A-Z]/)) {
-            possibleMovement.push(`${axisX + parameterX}${axisY + parameterY}`);
-        } else if (item === "n" && checkPossibleMove(parameterX, parameterY, board, axisX, axisY, /[a-z]/)) {
-            possibleMovement.push(`${axisX + parameterX}${axisY + parameterY}`);
-        }
-    }
     /* Х axis */
-    pushMove(2, 1);
-    pushMove(2, -1);
-    pushMove(-2, 1);
-    pushMove(-2, -1);
+    possibleMovement.push(pushMove(item, board, axisX, axisY, 2, 1));
+    possibleMovement.push(pushMove(item, board, axisX, axisY, 2, -1));
+    possibleMovement.push(pushMove(item, board, axisX, axisY, -2, 1));
+    possibleMovement.push(pushMove(item, board, axisX, axisY, -2, -1));
     /* Y axis */
-    pushMove(1, 2);
-    pushMove(-1, 2);
-    pushMove(1, -2);
-    pushMove(-1, -2);
+    possibleMovement.push(pushMove(item, board, axisX, axisY, 1, 2));
+    possibleMovement.push(pushMove(item, board, axisX, axisY, -1, 2));
+    possibleMovement.push(pushMove(item, board, axisX, axisY, 1, -2));
+    possibleMovement.push(pushMove(item, board, axisX, axisY, -1, -2));
 
-    return possibleMovement;
+    console.log(possibleMovement);
+
+    return possibleMovement.filter(item => item != undefined);
 }
 
 export default knight;

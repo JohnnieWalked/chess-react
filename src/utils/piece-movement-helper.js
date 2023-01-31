@@ -8,6 +8,25 @@ const checkPossibleMove = (shiftX, shiftY, board, axisX, axisY, regExp) => {
 }
 
 /* 
+    Function pushMove() was created to check the specific move
+    as opposed to a function moveHelper() which works with eternal loop and checks for moves. 
+    
+    This function receives name of piece, current state of a chessboard, current 'axisX' and 'axisY' of piece,
+    and also 'shiftX' and 'shiftY' to check possible move in that direction. 
+
+    This function was used in 'knight' and 'king' movement.
+*/
+const pushMove = (item, board, axisX, axisY, shiftX, shiftY) => {
+    /* for white */
+    if (item === item.toUpperCase() && checkPossibleMove(shiftX, shiftY, board, axisX, axisY, /[A-Z]/)) {
+        return `${axisX + shiftX}${axisY + shiftY}`;
+    /* for black */
+    } else if (item === item.toLowerCase() && checkPossibleMove(shiftX, shiftY, board, axisX, axisY, /[a-z]/)) {
+        return `${axisX + shiftX}${axisY + shiftY}`;
+    }
+} 
+
+/* 
     Function moveHelper() created to optimize movement of pieces such as: bishop, queen, rook.
     Function receives piece, its coordinates, chessboard, shiftX and shiftY. 'shiftX' and 'shiftY' are needed to check the opportunity to move piece on next square. 
 
@@ -66,5 +85,5 @@ function moveHelper
     return obj;
 }
 
-export { checkPossibleMove };
+export { pushMove };
 export default moveHelper;

@@ -1,9 +1,10 @@
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import pawn from "../pieceMovement/pawn";
 import knight from "../pieceMovement/knight";
 import bishop from "../pieceMovement/bishop";
 import rook from "../pieceMovement/rook";
 import queen from "../pieceMovement/queen";
+import king from "../pieceMovement/king";
 
 const ChessContext = createContext();
 
@@ -49,7 +50,7 @@ function Provider({ children }) {
             case 'n': console.log((knight(item, xy, board))); setShowPossibleWays((knight(item, xy, board))); break;
             case 'b': console.log(bishop(item, xy, board)); setShowPossibleWays((bishop(item, xy, board))); break;
             case 'q': console.log(queen(item, xy, board)); setShowPossibleWays((queen(item, xy, board))); break;
-            case 'k': console.log("gonna use function", temp); break;
+            case 'k': console.log(king(item, xy, board)); setShowPossibleWays((king(item, xy, board))); break;
         }
     };
 
