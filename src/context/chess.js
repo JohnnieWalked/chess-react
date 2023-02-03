@@ -5,6 +5,7 @@ import bishop from "../pieceMovement/bishop";
 import rook from "../pieceMovement/rook";
 import queen from "../pieceMovement/queen";
 import king from "../pieceMovement/king";
+import isCheck from "../utils/isCheck";
 
 const ChessContext = createContext();
 
@@ -32,6 +33,13 @@ function Provider({ children }) {
         {c: 1, f: 'q'}, {c: 0, f: 'b'}, {c: 1, f: 'n'}, {c: 0, f: 'r'}],
     ]);
 
+    /* resposible for showing a check */
+    const [check, setCheck] = useState(false);
+
+    /* watch kings locations (id) */
+    const [whiteKing, setWhiteKingID] = useState('');
+    const [blackKing, setBlackKingID] = useState('');
+
     /* Responsible for showing possible paths */
     const [showPossibleWays, setShowPossibleWays] = useState([]);
     
@@ -40,21 +48,79 @@ function Provider({ children }) {
 
     /* Responsible for selecting the figure in the square */
     const [pieceID, setPieceID] = useState('');
-    const [pieceName, setPieceName] = useState('');
+    const [pieceName, setPieceName] = useState('');    
 
-    const algorithmSelection = (item, xy) => {
-        let temp = item.toLowerCase();
-        switch (temp) {
-            case 'p': console.log(pawn(item, xy, board)); setShowPossibleWays((pawn(item, xy, board))); break;
-            case 'r': console.log((rook(item, xy, board))); setShowPossibleWays((rook(item, xy, board))); break;
-            case 'n': console.log((knight(item, xy, board))); setShowPossibleWays((knight(item, xy, board))); break;
-            case 'b': console.log(bishop(item, xy, board)); setShowPossibleWays((bishop(item, xy, board))); break;
-            case 'q': console.log(queen(item, xy, board)); setShowPossibleWays((queen(item, xy, board))); break;
-            case 'k': console.log(king(item, xy, board)); setShowPossibleWays((king(item, xy, board))); break;
-        }
-    };
+    useEffect(() => {
+        console.log("ALGO SELECTED");
+        const algorithmSelection = (item, xy) => {
+            let temp = item.toLowerCase();
+            switch (temp) {
+    
+                case 'p': temp = pawn(item, xy, board); console.log("pawn", temp);
+                    preventCheck(temp); break;
+    
+                case 'r': temp = rook(item, xy, board); console.log("rook", temp); 
+                    preventCheck(temp); break;
+    
+                case 'n': temp = knight(item, xy, board); console.log("knight", temp); 
+                    preventCheck(temp); break;
+    
+                case 'b': temp = bishop(item, xy, board); console.log("bishop", temp);
+                    preventCheck(temp); break;
+    
+                case 'q': temp = queen(item, xy, board); console.log("queen", temp); 
+                    preventCheck(temp); break;
+    
+                case 'k': temp = king(item, xy, board); console.log("king", temp); 
+                    preventCheck(temp); break;
+            }
+        };
+        algorithmSelection(pieceName, pieceID);
+    }, [pieceID]);
+
+    /* preventCheck() sorts possible movements to avoid the check */
+    const preventCheck = (possibleWays) => {
+        const oldAxisX = pieceID[0],
+              oldAxisY = pieceID[1];
+
+        let preventCheckMoves = possibleWays.map(xy => {
+            const newAxisX = xy[0],
+                  newAxisY = xy[1];
+            let newBoard = JSON.parse(JSON.stringify([...board]));
+            newBoard[newAxisX][newAxisY].f = newBoard[oldAxisX][oldAxisY].f;
+            newBoard[oldAxisX][oldAxisY].f = '';
+
+            /* responsible for king's movement to avoid checks */
+            if (pieceName === 'k' || pieceName === "K") {
+                if (isCheck(pieceName, xy, newBoard)) {
+                    return "";
+                } else {
+                    return xy;
+                }
+            }
+
+            /* responsible for allied pieces' movement to avoid the check */
+            if (/[A-Z]/.test(pieceName)) {
+                if (!isCheck("K", whiteKing, newBoard)) {
+                    return xy;
+                } else {
+                    return "";
+                }
+            } else {
+                if (!isCheck("k", blackKing, newBoard)) {
+                    return xy;
+                } else {
+                    return "";
+                }
+            }
+        });
+
+        setShowPossibleWays(preventCheckMoves.filter(item => item != ""));
+        console.log('preventCHeck', preventCheckMoves.filter(item => item != ""));
+    }
 
     const movePiece = (chessPieceID) => {
+        console.log("MOVE PIECE");
         const oldAxisX = pieceID[0],
               oldAxisY = pieceID[1],
               newAxisX = chessPieceID[0],
@@ -63,14 +129,16 @@ function Provider({ children }) {
         let newBoard = JSON.parse(JSON.stringify([...board]));
         newBoard[newAxisX][newAxisY].f = newBoard[oldAxisX][oldAxisY].f;
         newBoard[oldAxisX][oldAxisY].f = '';
-
         setBoard(newBoard);
+        /* 
+        responsible for calculating a check. 
+        if the order is 'true', white king can NOT be checked, isCheck() will calculate if black king was checked. 
+        if the order is 'false', black king can NOT be checked, isCheck() will calculate if white king was checked 
+        */
+        setCheck(!order ? isCheck('K', whiteKing, newBoard) : isCheck('k', blackKing, newBoard));
+        /* after move - change order */
         setOrder(!order);
-    }
-
-    useEffect(() => {
-        algorithmSelection(pieceName, pieceID);
-    }, [pieceName, pieceID])
+    };
 
     function clearState() {
         setPieceID('');
@@ -83,7 +151,7 @@ function Provider({ children }) {
     }, [board]);
 
     return (
-        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order}}>
+        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check}}>
             {children}
         </ChessContext.Provider>
     )

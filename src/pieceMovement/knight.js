@@ -28,7 +28,10 @@ function knight(item, xy, board) {
     possibleMovement.push(pushMove(item, board, axisX, axisY, 1, -2));
     possibleMovement.push(pushMove(item, board, axisX, axisY, -1, -2));
 
-    console.log(possibleMovement);
+    /* 
+    part of checkKing() logic. if the array has the 'true' value, it will return "TRUE" to checkKing() function.
+    */
+    if (item === 'K' || item === 'k') return possibleMovement.some(item => item === true);
 
     return possibleMovement.filter(item => item != undefined);
 }

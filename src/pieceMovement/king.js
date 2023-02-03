@@ -1,12 +1,5 @@
 import { pushMove } from "../utils/piece-movement-helper";
 
-/* If  */
-const checkKing = (regExp, board, axisX, shiftX, axisY, shiftY) => {
-    if (/[a-z]/.test(board[axisX + shiftX][axisY + shiftY].f) === 'k') {
-        return 
-    }
-}
-
 function king(item, xy, board) {
     let possibleMovement = [];
     const axisX = Number(xy[0]);
@@ -35,8 +28,6 @@ function king(item, xy, board) {
 
     /* Right Bottom */
     possibleMovement.push(pushMove(item, board, axisX, axisY, 1, 1));
-
-    console.log(possibleMovement);
 
     return possibleMovement.filter(item => item != undefined);
 }

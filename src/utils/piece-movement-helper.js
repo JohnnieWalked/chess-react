@@ -19,9 +19,21 @@ const checkPossibleMove = (shiftX, shiftY, board, axisX, axisY, regExp) => {
 const pushMove = (item, board, axisX, axisY, shiftX, shiftY) => {
     /* for white */
     if (item === item.toUpperCase() && checkPossibleMove(shiftX, shiftY, board, axisX, axisY, /[A-Z]/)) {
+        /* 
+        part of checkKing() logic. if pieceName is a white king and enemy knight is in radius of a threat - it will return 'TRUE'.
+        */
+        if (item === "K" && /[n]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
+            return true;
+        }
         return `${axisX + shiftX}${axisY + shiftY}`;
     /* for black */
     } else if (item === item.toLowerCase() && checkPossibleMove(shiftX, shiftY, board, axisX, axisY, /[a-z]/)) {
+        /* 
+        part of checkKing() logic. if pieceName is a black king and enemy knight is in radius of a threat - it will return 'TRUE'.
+        */
+        if (item === "k" && /[N]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
+            return true;
+        }
         return `${axisX + shiftX}${axisY + shiftY}`;
     }
 } 
@@ -30,11 +42,12 @@ const pushMove = (item, board, axisX, axisY, shiftX, shiftY) => {
     Function moveHelper() created to optimize movement of pieces such as: bishop, queen, rook.
     Function receives piece, its coordinates, chessboard, shiftX and shiftY. 'shiftX' and 'shiftY' are needed to check the opportunity to move piece on next square. 
 
-    This function is commonly used with eternal loop, which will send to function 'shiftX++' and 'shiftY++' for checking next squares. 
+    This function is used with eternal loop, which will send to function 'shiftX++' and 'shiftY++' for checking next squares. 
     If possible move goes beyond the chessboard, collides with allied piece or collides with enemy piece - it will return an object:
         const obj = {
             possibleMove: '',   --> resposible to keep the possible move value.
-            loop: true          --> responsible for parameter, that will break loop.
+            loop: true,         --> responsible for parameter, that will break loop.
+            checkKing: false    --> responsible for parameter, that will show check.
         };
 */
 function moveHelper
@@ -49,14 +62,34 @@ function moveHelper
 
     const obj = {
         possibleMove: '',
-        loop: true
+        loop: true,
+        isCheck: false
     };
 
     /* for White pieces */
     if (pieceName === pieceName.toUpperCase() && checkPossibleMove(shiftX, shiftY, board, axisX, axisY, /[A-Z]/)) {
         /* 
+        part of isCheck() logic. if pieceName is a white king and there are enemy pieces such as bishop,
+        queen or rook on the path - it will return 'TRUE'.
+
+        IMPORTANT: we must separate check by rook and check by bishop, because they use different shifting. 
+        If we do NOT this, the rook will be capable to put check the king diagonally.
+        */
+        if (shiftX === 0 || shiftY === 0) {
+            if (pieceName === "K" && /[q,r]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
+                obj.isCheck = true;
+                return obj;
+            }
+        } else {
+            if (pieceName === "K" && /[q,b]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
+                obj.isCheck = true;
+                return obj;
+            }
+        }
+        /* 
             if there is an enemy piece on a square, it will add this square to variable 
-            and set 'obj.loop' value to 'false' 
+            and set 'obj.loop' value to 'false'. 
+            if we do NOT stop loop - rook, bishop and queen will be capable to hit any enemy piece on their path
         */
         if (/[a-z]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
             obj.possibleMove = `${axisX + shiftX}${axisY + shiftY}`;
@@ -68,8 +101,28 @@ function moveHelper
     /* for Black pieces */
     else if (pieceName === pieceName.toLowerCase() && checkPossibleMove(shiftX, shiftY, board, axisX, axisY, /[a-z]/)) {
         /* 
+        part of isCheck() logic. if pieceName is a black king and there are enemy pieces such as bishop,
+        queen or rook on the path - it will return 'TRUE'.
+
+        IMPORTANT: we must separate check by rook and by bishop, because they use different shifting. 
+        if we do NOT this, the rook will be capable to put check the king diagonally.
+        */
+        if (shiftX === 0 || shiftY === 0) {
+            if (pieceName === "k" && /[Q,R]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
+                obj.isCheck = true;
+                return obj;
+            }
+        } else {
+            if (pieceName === "k" && /[Q,B]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
+                obj.isCheck = true;
+                return obj;
+            }
+        }
+        
+        /* 
             if there is an enemy piece on a square, it will add this square to variable 
-            and set 'obj.loop' value to 'false' 
+            and set 'obj.loop' value to 'false'
+            if we do NOT stop loop - rook, bishop and queen will be capable to hit any enemy piece on their path 
         */
         if (/[A-Z]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
             obj.possibleMove = `${axisX + shiftX}${axisY + shiftY}`;
