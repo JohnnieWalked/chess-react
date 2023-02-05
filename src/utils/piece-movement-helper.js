@@ -3,7 +3,7 @@
     and does NOT collide with allied piece it will return 'true', else - 'false' 
 */
 const checkPossibleMove = (shiftX, shiftY, board, axisX, axisY, regExp) => {
-    return board[axisX + shiftX] && board[axisY + shiftY] != undefined 
+    return board[axisX + shiftX] != undefined && board[axisY + shiftY] != undefined 
            && !regExp.test(board[axisX + shiftX][axisY + shiftY].f);
 }
 
@@ -19,20 +19,41 @@ const checkPossibleMove = (shiftX, shiftY, board, axisX, axisY, regExp) => {
 const pushMove = (item, board, axisX, axisY, shiftX, shiftY) => {
     /* for white */
     if (item === item.toUpperCase() && checkPossibleMove(shiftX, shiftY, board, axisX, axisY, /[A-Z]/)) {
-        /* 
-        part of checkKing() logic. if pieceName is a white king and enemy knight is in radius of a threat - it will return 'TRUE'.
-        */
-        if (item === "K" && /[n]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
-            return true;
+        /* part of isCheck() logic. */
+        if (item === "K") {
+            /* 
+            if the 'pieceName' is a white king and enemy knight is in radius of a threat - it will return 'TRUE'. */
+            if (shiftX > 1 || shiftX < -1 || shiftY > 1 || shiftY < -1) {
+                if (board[axisX + shiftX][axisY + shiftY].f === "n"
+                    && board[axisX + shiftX][axisY + shiftY].f != "k") {
+                    return true;
+                }
+            } else {
+                /* if the 'pieceName' is a white king and next move will be near white king - returns 'TRUE' */
+                if (board[axisX + shiftX][axisY + shiftY].f === "k") {
+                    return true;
+                }
+            }
         }
         return `${axisX + shiftX}${axisY + shiftY}`;
+
     /* for black */
     } else if (item === item.toLowerCase() && checkPossibleMove(shiftX, shiftY, board, axisX, axisY, /[a-z]/)) {
-        /* 
-        part of checkKing() logic. if pieceName is a black king and enemy knight is in radius of a threat - it will return 'TRUE'.
-        */
-        if (item === "k" && /[N]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
-            return true;
+        /* part of isCheck() logic. */
+        if (item === "k") {
+            /* 
+            if the 'pieceName' is a black king and enemy knight is in radius of a threat - it will return 'TRUE'. */
+            if (shiftX > 1 || shiftX < -1 || shiftY > 1 || shiftY < -1) {
+                if (board[axisX + shiftX][axisY + shiftY].f === "N" 
+                    && board[axisX + shiftX][axisY + shiftY].f != "K") {
+                    return true;
+                }
+            } else {
+                /* if the 'pieceName' is a black king and next move will be near white king - returns 'TRUE' */
+                if (board[axisX + shiftX][axisY + shiftY].f === "K") {
+                    return true;
+                }
+            }
         }
         return `${axisX + shiftX}${axisY + shiftY}`;
     }

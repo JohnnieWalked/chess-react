@@ -11,23 +11,39 @@ function pawn(item, xy, board) {
     }
 
     /* check for attack move */
-    function attackMove(pieceName, parameterX, parameterY, reg) {
-        return item === pieceName 
-            && board[axisX + parameterX][axisY + parameterY] != undefined 
-            && reg.test(board[axisX + parameterX][axisY + parameterY].f);
+    function attackMove(shiftX, shiftY, reg) {
+        if (board[axisX + shiftX][axisY + shiftY] != undefined 
+            && reg.test(board[axisX + shiftX][axisY + shiftY].f)) {
+
+                /* 
+                part of isCheck() logic. if a king can hit an enemy pawn diagonally - returns 'true', 
+                which means the check.
+                */
+                if (item === "K" && /[p]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
+                   possibleMovement.push(true);
+                } else if (item === "k" && /[P]/.test(board[axisX + shiftX][axisY + shiftY].f)) {
+                    possibleMovement.push(true);
+                }
+                
+                else {
+                    possibleMovement.push(`${axisX + shiftX}${axisY + shiftY}`);
+                }
+        }
     }
 
-    if (attackMove('P', 1, 1, /[a-z]/)) possibleMovement.push(`${axisX + 1}${axisY + 1}`); 
-    if (attackMove('P', 1, -1, /[a-z]/)) possibleMovement.push(`${axisX + 1}${axisY - 1}`);
-
-    if (attackMove('p', -1, 1, /[A-Z]/)) possibleMovement.push(`${axisX - 1}${axisY + 1}`);
-    if (attackMove('p', -1, -1, /[A-Z]/)) possibleMovement.push(`${axisX - 1}${axisY - 1}`);
+    if (item === "P" || item === "K") {
+        attackMove(1, 1, /[a-z]/); 
+        attackMove(1, -1, /[a-z]/);
+    } else if (item === "p" || item === "k") {
+        attackMove(-1, 1, /[A-Z]/);
+        attackMove(-1, -1, /[A-Z]/);
+    }
 
     /* move on 1 square */ 
     /* check for barrier ahead */
-    function checkPossibleBarrier(parameterX) {
-        if (board[axisX + parameterX][axisY].f != "") {
-            possibleMovement = possibleMovement.filter(item => item != `${axisX + parameterX}${axisY}`);
+    function checkPossibleBarrier(shiftX) {
+        if (board[axisX + shiftX][axisY].f != "") {
+            possibleMovement = possibleMovement.filter(item => item != `${axisX + shiftX}${axisY}`);
         }
         return possibleMovement;
     }
@@ -39,6 +55,11 @@ function pawn(item, xy, board) {
         possibleMovement.push(`${axisX - 1}${axisY}`);
         possibleMovement = checkPossibleBarrier(-1);
     }
+
+    /* 
+        part of checkKing() logic. if the array has the 'true' value, it will return "TRUE" to isCheck() function.
+    */
+    if (item === 'K' || item === 'k') return possibleMovement.some(item => item === true);
 
     return possibleMovement
 }

@@ -90,23 +90,33 @@ function Provider({ children }) {
             newBoard[newAxisX][newAxisY].f = newBoard[oldAxisX][oldAxisY].f;
             newBoard[oldAxisX][oldAxisY].f = '';
 
-            /* responsible for king's movement to avoid checks */
+            /* 
+                responsible for king's movement to avoid checks. 
+                    isCheck() is responsible for watching checks by pieces, 
+                    king() is responsible for keeping distance between kings
+
+                logic: if possible king's move has a threat from enemy piece OR 
+                not keeping distance between kings - returns "", else returns possible move
+            */
             if (pieceName === 'k' || pieceName === "K") {
-                if (isCheck(pieceName, xy, newBoard)) {
-                    return "";
+                if (isCheck(pieceName, xy, newBoard) || king(pieceName, xy, newBoard) === true) {
+                    return '';
                 } else {
                     return xy;
                 }
             }
 
-            /* responsible for allied pieces' movement to avoid the check */
-            if (/[A-Z]/.test(pieceName)) {
+            /* 
+            responsible for allied pieces' movement to avoid the check
+                the main difference between function above - is static king, we choose only allied pieces
+            */
+            if (/[P,R,N,B,Q]/.test(pieceName)) {
                 if (!isCheck("K", whiteKing, newBoard)) {
                     return xy;
                 } else {
                     return "";
                 }
-            } else {
+            } else if (/[p,r,n,b,q]/) {
                 if (!isCheck("k", blackKing, newBoard)) {
                     return xy;
                 } else {
@@ -114,9 +124,9 @@ function Provider({ children }) {
                 }
             }
         });
-
-        setShowPossibleWays(preventCheckMoves.filter(item => item != ""));
+        
         console.log('preventCHeck', preventCheckMoves.filter(item => item != ""));
+        setShowPossibleWays(preventCheckMoves.filter(item => item != ""));
     }
 
     const movePiece = (chessPieceID) => {

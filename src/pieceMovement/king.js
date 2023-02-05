@@ -5,6 +5,7 @@ function king(item, xy, board) {
     const axisX = Number(xy[0]);
     const axisY = Number(xy[1]);
 
+
     /* Top Direction */
     possibleMovement.push(pushMove(item, board, axisX, axisY, 0, -1));
 
@@ -28,6 +29,9 @@ function king(item, xy, board) {
 
     /* Right Bottom */
     possibleMovement.push(pushMove(item, board, axisX, axisY, 1, 1));
+
+    console.log(possibleMovement);
+    if (possibleMovement.some(item => item === true)) return true;
 
     return possibleMovement.filter(item => item != undefined);
 }
