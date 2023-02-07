@@ -4,13 +4,25 @@ import useChessContext from "../hooks/use-chess-context";
 import './chessSquare.css';
 
 function ChessSquare({ square, id, showPossibleWaysClass }) {
-    const { setWhiteKingID, setBlackKingID, whiteKing, blackKing, order, check, board } = useChessContext();
+    const { setWhiteKingID, setBlackKingID, whiteKing, 
+            blackKing, order, check, board, setCastleWhite, setCastleBlack } = useChessContext();
 
     useEffect(() => {
-        if (square.f === "K") setWhiteKingID(id);
-        if (square.f === "k") setBlackKingID(id);
+        if (square.f === "K") {
+            /* responsible for allowing player to castle */
+            if (whiteKing != id && whiteKing != undefined) {
+                setCastleWhite(false);
+            }
+            setWhiteKingID(id); console.log("Black king", id); 
+        } 
+        if (square.f === "k") {
+            /* responsible for allowing player to castle */
+            if (blackKing != id && blackKing != undefined) {
+                setCastleBlack(false);
+            }
+            setBlackKingID(id); console.log("White king", id); 
+        } 
     }, [board]);
-    
     
     return (
         <div 

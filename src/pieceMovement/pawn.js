@@ -57,7 +57,7 @@ function pawn(item, xy, board) {
     }
 
     /* 
-        part of checkKing() logic. if the array has the 'true' value, it will return "TRUE" to isCheck() function.
+        part of isCheck() logic. if the array has the 'true' value, it will return "TRUE" to isCheck() function.
     */
     if (item === 'K' || item === 'k') return possibleMovement.some(item => item === true);
 

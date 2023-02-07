@@ -2,7 +2,6 @@ import knight from "../pieceMovement/knight";
 import bishop from "../pieceMovement/bishop";
 import rook from "../pieceMovement/rook";
 import pawn from "../pieceMovement/pawn";
-import king from "../pieceMovement/king";
 
 /* 
     The function isCheck() is responsible for calculating a check. 

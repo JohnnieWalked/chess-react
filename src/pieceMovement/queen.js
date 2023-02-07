@@ -5,25 +5,25 @@ function queen(item, xy, board) {
     const axisX = Number(xy[0]);
     const axisY = Number(xy[1]);
 
-    /* Top Direction */
+    /* Left Direction */
     possibleMovement.push(loop(0, -1, item, axisX, axisY, board));
 
-    /* Right */
+    /* Bottom */
     possibleMovement.push(loop(1, 0, item, axisX, axisY, board));
 
-    /* Bottom */
+    /* Right */
     possibleMovement.push(loop(0, 1, item, axisX, axisY, board));
 
-    /* Left */
+    /* Top */
     possibleMovement.push(loop(-1, 0, item, axisX, axisY, board));
 
     /* Left Top */
     possibleMovement.push(loop(-1, -1, item, axisX, axisY, board));
 
-    /* Right Top */
+    /* Left Bottom */
     possibleMovement.push(loop(1, -1, item, axisX, axisY, board));
     
-    /* Left Bottom */
+    /* Right Top */
     possibleMovement.push(loop(-1, 1, item, axisX, axisY, board));
 
     /* Right Bottom */
