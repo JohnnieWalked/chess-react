@@ -1,5 +1,6 @@
 svg {
     pointer-events: none;
+    width: 100%;
 }
 
 span {
@@ -9,12 +10,11 @@ span {
 .dot:before {
     position: absolute;
     content: "";
-    width: 20px;
-    height: 20px;
+    width: 42%;
+    height: 42%;
     border-radius: 100%;
     opacity: .5;
     background-color: darkslateblue;
-
 }
 
 .check {

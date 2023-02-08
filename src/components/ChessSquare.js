@@ -26,7 +26,7 @@ function ChessSquare({ square, id, showPossibleWaysClass }) {
     
     return (
         <div 
-        className={`w-12 h-12 flex items-center justify-center relative
+        className={`w-full h-full flex items-center justify-center relative
         ${square.c === 0 ? 'bg-[#788592]' : 'bg-[#242D38]'} 
         ${showPossibleWaysClass.length != 0 ? 'dot' : ''}
         ${order && check && id === whiteKing ? 'check' : ''}
