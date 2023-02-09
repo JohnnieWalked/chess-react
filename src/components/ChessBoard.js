@@ -47,7 +47,7 @@ function ChessBoard() {
     });
 
     return (
-        <div className="w-[30rem] h-[30rem] grid self-center">
+        <div className="w-[28rem] h-[28rem] grid self-center">
             {renderBoard}
         </div>
     );

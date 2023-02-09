@@ -1,4 +1,4 @@
-function pawn(item, xy, board) {
+function pawn(item, xy, board, enPassant = [false, '']) {
     let possibleMovement = [];
     const axisX = Number(xy[0]);
     const axisY = Number(xy[1]);
@@ -12,6 +12,16 @@ function pawn(item, xy, board) {
 
     /* check for attack move */
     function attackMove(shiftX, shiftY, reg) {
+        /* 
+        en passant logic; we will push attack move (en passant) if:
+            - enPassant[0] === true;
+            - piece, we selected, is a pawn;
+            - atack move === enPassant[1] (square behind the pawn, that has just made an initial two-square advance);
+        */
+        if (enPassant[0] && /[P,p]/.test(item) && `${axisX + shiftX}` + `${axisY + shiftY}` === enPassant[1]) {
+            possibleMovement.push(`${axisX + shiftX}${axisY + shiftY}`);
+        }
+
         if (board[axisX + shiftX][axisY + shiftY] != undefined 
             && reg.test(board[axisX + shiftX][axisY + shiftY].f)) {
 

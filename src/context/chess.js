@@ -21,10 +21,10 @@ function Provider({ children }) {
 
         [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, 
         {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}],
-        [{c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, 
-        {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}],
-        [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, 
-        {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}],
+        [{c: 1, f: 'p'}, {c: 0, f: ''}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, 
+        {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: 'p'}, {c: 0, f: ''}],
+        [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: 'P'}, {c: 1, f: ''}, 
+        {c: 0, f: ''}, {c: 1, f: 'P'}, {c: 0, f: ''}, {c: 1, f: ''}],
         [{c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, 
         {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}],
 
@@ -53,14 +53,17 @@ function Provider({ children }) {
 
     /* Responsible for selecting the figure in the square */
     const [pieceID, setPieceID] = useState('');
-    const [pieceName, setPieceName] = useState('');    
+    const [pieceName, setPieceName] = useState('');   
+    
+    /* En passant state and XY for possible pawn's attack move */
+    const [passant, setPassant] = useState([false, ''])
 
     useEffect(() => {
         console.log("ALGO SELECTED");
         const algorithmSelection = (item, xy) => {
             let temp = item.toLowerCase();
             switch (temp) {
-                case 'p': temp = pawn(item, xy, board); console.log("pawn", temp);
+                case 'p': temp = pawn(item, xy, board, passant); console.log("pawn", temp);
                     preventCheck(temp); break;
     
                 case 'r': temp = rook(item, xy, board); console.log("rook", temp); 
@@ -148,10 +151,10 @@ function Provider({ children }) {
 
     const movePiece = (chessPieceID) => {
         console.log("MOVE PIECE");
-        const oldAxisX = pieceID[0],
-              oldAxisY = pieceID[1],
-              newAxisX = chessPieceID[0],
-              newAxisY = chessPieceID[1];
+        const oldAxisX = Number(pieceID[0]),
+              oldAxisY = Number(pieceID[1]),
+              newAxisX = Number(chessPieceID[0]),
+              newAxisY = Number(chessPieceID[1]);
 
         /* watch for rook's move. if it is the first rook's move - set castle value of this rook to "false" */
         let newCastleWhite = castleWhite != false ? JSON.parse(JSON.stringify([...castleWhite])) : false,
@@ -172,11 +175,34 @@ function Provider({ children }) {
                 newCastleBlack != false ? newCastleBlack[1] = false : false;
                 setCastleBlack(newCastleBlack);
             }
-        }    
+        }
 
         let newBoard = JSON.parse(JSON.stringify([...board]));
         newBoard[newAxisX][newAxisY].f = newBoard[oldAxisX][oldAxisY].f;
         newBoard[oldAxisX][oldAxisY].f = '';
+
+        /* 
+            en passant logic: if pawn has just made an initial two-square advance, 
+            we set passant status to "TRUE" and receive coordinates of this pawn with shift axis X +- 1
+            (depends on color); 
+            Literally, we just receive the square behind the pawn, that has just made an initial two-square advance.
+        */
+        if (passant[0]) {
+            if (pieceName === 'P' && newBoard[newAxisX - 1][newAxisY].f != "") {
+                newBoard[newAxisX - 1][newAxisY].f = "";
+            }
+            else if (pieceName === 'p' && newBoard[newAxisX + 1][newAxisY].f != "") {
+                newBoard[newAxisX + 1][newAxisY].f = "";
+            }
+        }
+
+        if (pieceName === 'P' && oldAxisX + 2 === newAxisX) {
+            setPassant([true, `${newAxisX - 1}${newAxisY}`]);
+        } else if (pieceName === 'p' && (oldAxisX - 2 === newAxisX)) {
+            setPassant([true, `${newAxisX + 1}${newAxisY}`]);
+        } else {
+            setPassant([false, ``]);
+        }
 
         /* finish castling at newBoard */
         if (pieceName === 'K') {
@@ -192,12 +218,14 @@ function Provider({ children }) {
         else {
             setBoard(newBoard);
         }
+
         /* 
             responsible for calculating a check. 
             if the order is 'true', white king can NOT be checked, isCheck() will calculate if black king was checked. 
             if the order is 'false', black king can NOT be checked, isCheck() will calculate if white king was checked 
         */
         setCheck(!order ? isCheck('K', whiteKing, newBoard) : isCheck('k', blackKing, newBoard));
+
         /* after move - change order */
         setOrder(!order);
     };
