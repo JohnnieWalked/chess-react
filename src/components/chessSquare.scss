@@ -1,20 +1,27 @@
-svg {
-    pointer-events: none;
-    width: 100%;
+.chessSquare {
+    svg {
+        pointer-events: none;
+        width: 100%;
+    }
+    
+    span {
+        display: none;
+    }
 }
 
-span {
-    display: none;
-}
-
-.dot:before {
+.dot::before, .dot_enemy::before {
     position: absolute;
     content: "";
-    width: 42%;
-    height: 42%;
+    width: 40%;
+    height: 40%;
     border-radius: 100%;
     opacity: .5;
+}
+.dot::before {
     background-color: darkslateblue;
+}
+.dot_enemy:before {
+    background-color: #681C0B;
 }
 
 .check {
@@ -22,3 +29,5 @@ span {
     -moz-box-shadow: inset 0px 0px 15px 0px rgb(255 14 14);
     box-shadow: inset 0px 0px 15px 0px rgb(255 14 14);
 }
+
+

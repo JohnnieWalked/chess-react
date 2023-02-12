@@ -16,20 +16,20 @@ function Provider({ children }) {
     const [board, setBoard] = useState([
         [{c: 0, f: 'R'}, {c: 1, f: 'N'}, {c: 0, f: 'B'}, {c: 1, f: 'K'},
         {c: 0, f: 'Q'}, {c: 1, f: 'B'}, {c: 0, f: 'N'}, {c: 1, f: 'R'}],
-        [{c: 1, f: 'P'}, {c: 0, f: 'P'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}, 
+        [{c: 1, f: 'P'}, {c: 0, f: 'p'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}, 
         {c: 1, f: 'P'}, {c: 0, f: 'P'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}],
 
         [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, 
         {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}],
-        [{c: 1, f: 'p'}, {c: 0, f: ''}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, 
-        {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: 'p'}, {c: 0, f: ''}],
-        [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: 'P'}, {c: 1, f: ''}, 
-        {c: 0, f: ''}, {c: 1, f: 'P'}, {c: 0, f: ''}, {c: 1, f: ''}],
+        [{c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, 
+        {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}],
+        [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, 
+        {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}],
         [{c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, 
         {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}],
 
         [{c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'p'}, 
-        {c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'p'}],
+        {c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'P'}],
         [{c: 1, f: 'r'}, {c: 0, f: 'n'}, {c: 1, f: 'b'}, {c: 0, f: 'k'}, 
         {c: 1, f: 'q'}, {c: 0, f: 'b'}, {c: 1, f: 'n'}, {c: 0, f: 'r'}],
     ]);
@@ -57,6 +57,9 @@ function Provider({ children }) {
     
     /* En passant state and XY for possible pawn's attack move */
     const [passant, setPassant] = useState([false, ''])
+
+    /* pawn promotion */
+    const [promotion, setPromotion] = useState(false);
 
     useEffect(() => {
         console.log("ALGO SELECTED");
@@ -205,18 +208,25 @@ function Provider({ children }) {
         }
 
         /* finish castling at newBoard */
-        if (pieceName === 'K') {
+        if (pieceName === 'K' && castleWhite != false) {
             if (chessPieceID === '01') {newBoard[0][2].f = newBoard[0][0].f; newBoard[0][0].f = '';} 
             if (chessPieceID === '05') {newBoard[0][4].f = newBoard[0][7].f; newBoard[0][7].f = '';} 
             setBoard(newBoard);
         } else 
-        if (pieceName === 'k') {
+        if (pieceName === 'k' && castleBlack != false) {
             if (chessPieceID === '71') {newBoard[7][2].f = newBoard[7][0].f; newBoard[7][0].f = '';} 
             if (chessPieceID === '75') {newBoard[7][4].f = newBoard[7][7].f; newBoard[7][7].f = '';}
             setBoard(newBoard); 
         }
         else {
             setBoard(newBoard);
+        }
+
+        /* Pawn Promotion */
+        if (pieceName === 'P' && newAxisX === 7) {
+            return setPromotion(true);
+        } else if (pieceName === 'p' && newAxisX === 0) {
+            return setPromotion(true);
         }
 
         /* 
@@ -230,6 +240,26 @@ function Provider({ children }) {
         setOrder(!order);
     };
 
+    const getPromotedPiece = (value) => {
+        const target = value.target.parentNode.children[0].innerHTML;
+
+        let newBoard = JSON.parse(JSON.stringify([...board]));
+        newBoard[7] = newBoard[7].map(item => {
+            if (item.f === 'P') item.f = target;
+            return item;
+        })
+
+        newBoard[0] = newBoard[0].map(item => {
+            if (item.f === 'p') item.f = target;
+            return item;
+        })
+
+        setBoard(newBoard);
+        setPromotion(false);
+        setCheck(!order ? isCheck('K', whiteKing, newBoard) : isCheck('k', blackKing, newBoard));
+        setOrder(!order);
+    }
+
     function clearState() {
         console.log("CLEAR STATE");
         setPieceID('');
@@ -242,7 +272,7 @@ function Provider({ children }) {
     }, [board]);
 
     return (
-        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setCastleWhite, setCastleBlack}}>
+        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setCastleWhite, setCastleBlack, promotion, getPromotedPiece}}>
             {children}
         </ChessContext.Provider>
     )

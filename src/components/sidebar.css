@@ -23,6 +23,7 @@
 
 .sidebar-list li {
     position: relative;
+    cursor: pointer;
 }
 
 .sidebar-list li:hover {

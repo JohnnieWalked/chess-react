@@ -6,7 +6,7 @@ import pawn from "../pieceMovement/pawn";
 /* 
     The function isCheck() is responsible for calculating a check. 
     The main idea of this function is to assign to knight's, bishop's and rook's movements to the king. 
-    It will return "TRUE" if there is an enemy piece (bishop, knight, queen, rook) on the same axis (vertical, horizontal or diagonal)
+    It will return "TRUE" if there is an enemy piece (bishop, knight, queen, rook) on the same axis (vertical, horizontal or diagonal) or if pawn is capable to strike the king; 'true' means check.
 */
 function isCheck(item, xy, board) {
     if (knight(item, xy, board) 
