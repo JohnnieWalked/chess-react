@@ -3,7 +3,7 @@
     and does NOT collide with allied piece it will return 'true', else - 'false' 
 */
 const checkPossibleMove = (shiftX, shiftY, board, axisX, axisY, regExp) => {
-    return board[axisX + shiftX] != undefined && board[axisY + shiftY] != undefined 
+    return board[axisX + shiftX] !== undefined && board[axisY + shiftY] !== undefined 
            && !regExp.test(board[axisX + shiftX][axisY + shiftY].f);
 }
 
@@ -25,7 +25,7 @@ const pushMove = (item, board, axisX, axisY, shiftX, shiftY) => {
             if the 'pieceName' is a white king and enemy knight is in radius of a threat - it will return 'TRUE'. */
             if (shiftX > 1 || shiftX < -1 || shiftY > 1 || shiftY < -1) {
                 if (board[axisX + shiftX][axisY + shiftY].f === "n"
-                    && board[axisX + shiftX][axisY + shiftY].f != "k") {
+                    && board[axisX + shiftX][axisY + shiftY].f !== "k") {
                     return true;
                 }
             } else {
@@ -45,7 +45,7 @@ const pushMove = (item, board, axisX, axisY, shiftX, shiftY) => {
             if the 'pieceName' is a black king and enemy knight is in radius of a threat - it will return 'TRUE'. */
             if (shiftX > 1 || shiftX < -1 || shiftY > 1 || shiftY < -1) {
                 if (board[axisX + shiftX][axisY + shiftY].f === "N" 
-                    && board[axisX + shiftX][axisY + shiftY].f != "K") {
+                    && board[axisX + shiftX][axisY + shiftY].f !== "K") {
                     return true;
                 }
             } else {

@@ -16,7 +16,7 @@ function Provider({ children }) {
     const [board, setBoard] = useState([
         [{c: 0, f: 'R'}, {c: 1, f: 'N'}, {c: 0, f: 'B'}, {c: 1, f: 'K'},
         {c: 0, f: 'Q'}, {c: 1, f: 'B'}, {c: 0, f: 'N'}, {c: 1, f: 'R'}],
-        [{c: 1, f: 'P'}, {c: 0, f: 'p'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}, 
+        [{c: 1, f: 'P'}, {c: 0, f: 'P'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}, 
         {c: 1, f: 'P'}, {c: 0, f: 'P'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}],
 
         [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, 
@@ -29,7 +29,7 @@ function Provider({ children }) {
         {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}],
 
         [{c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'p'}, 
-        {c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'P'}],
+        {c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'p'}],
         [{c: 1, f: 'r'}, {c: 0, f: 'n'}, {c: 1, f: 'b'}, {c: 0, f: 'k'}, 
         {c: 1, f: 'q'}, {c: 0, f: 'b'}, {c: 1, f: 'n'}, {c: 0, f: 'r'}],
     ]);
@@ -44,6 +44,9 @@ function Provider({ children }) {
     
     /* resposible for showing a check */
     const [check, setCheck] = useState(false);
+
+    /* responsible for showing a checkmate */
+    const [checkmate, setCheckmate] = useState(false);
 
     /* Responsible for showing possible paths */
     const [showPossibleWays, setShowPossibleWays] = useState([]);
@@ -61,37 +64,39 @@ function Provider({ children }) {
     /* pawn promotion */
     const [promotion, setPromotion] = useState(false);
 
+    const algorithmSelection = (item, xy) => {
+        let temp = item.toLowerCase();
+        switch (temp) {
+            case 'p': temp = pawn(item, xy, board, passant); console.log("pawn", temp);
+                return preventCheck(item, xy, temp);
+
+            case 'r': temp = rook(item, xy, board); console.log("rook", temp); 
+                return preventCheck(item, xy, temp);
+
+            case 'n': temp = knight(item, xy, board); console.log("knight", temp); 
+                return preventCheck(item, xy, temp);
+
+            case 'b': temp = bishop(item, xy, board); console.log("bishop", temp);
+                return preventCheck(item, xy, temp);
+
+            case 'q': temp = queen(item, xy, board); console.log("queen", temp); 
+                return preventCheck(item, xy, temp);
+
+            case 'k': if (check) { temp = king(item, xy, board) } 
+                      else { temp = king(item, xy, board, castleWhite, castleBlack) } 
+                      console.log("king", temp); 
+                      return preventCheck(item, xy, temp);
+            default: return;
+        }
+    };
+
     useEffect(() => {
         console.log("ALGO SELECTED");
-        const algorithmSelection = (item, xy) => {
-            let temp = item.toLowerCase();
-            switch (temp) {
-                case 'p': temp = pawn(item, xy, board, passant); console.log("pawn", temp);
-                    preventCheck(temp); break;
-    
-                case 'r': temp = rook(item, xy, board); console.log("rook", temp); 
-                    preventCheck(temp); break;
-    
-                case 'n': temp = knight(item, xy, board); console.log("knight", temp); 
-                    preventCheck(temp); break;
-    
-                case 'b': temp = bishop(item, xy, board); console.log("bishop", temp);
-                    preventCheck(temp); break;
-    
-                case 'q': temp = queen(item, xy, board); console.log("queen", temp); 
-                    preventCheck(temp); break;
-    
-                case 'k': if (check) { temp = king(item, xy, board) } 
-                          else { temp = king(item, xy, board, castleWhite, castleBlack) } 
-                          console.log("king", temp); 
-                          preventCheck(temp); break;
-            }
-        };
         algorithmSelection(pieceName, pieceID);
     }, [pieceID]);
 
     /* preventCheck() sorts possible movements to avoid the check */
-    const preventCheck = (possibleWays) => {
+    const preventCheck = (pieceName, pieceID, possibleWays) => {
         console.log("PREVENT CHECK");
         const oldAxisX = pieceID[0],
               oldAxisY = pieceID[1];
@@ -130,7 +135,7 @@ function Provider({ children }) {
                 } else {
                     return "";
                 }
-            } else if (/[p,r,n,b,q]/) {
+            } else if (/[p,r,n,b,q]/.test(pieceName)) {
                 if (!isCheck("k", blackKing, newBoard)) {
                     return xy;
                 } else {
@@ -140,16 +145,19 @@ function Provider({ children }) {
         });
 
         /* visit file "castling.js" for explanation */
-        if (pieceName === "K" && castleWhite != false) {
+        if (pieceName === "K" && castleWhite !== false) {
             preventCheckMoves = checkCastle(castleWhite[0], preventCheckMoves, "01", "02");
             preventCheckMoves = checkCastle(castleWhite[1], preventCheckMoves, "05", "04");
-        } else if (pieceName === "k" && castleBlack != false) {
+        } else if (pieceName === "k" && castleBlack !== false) {
             preventCheckMoves = checkCastle(castleBlack[0], preventCheckMoves, "71", "72");
             preventCheckMoves = checkCastle(castleBlack[1], preventCheckMoves, "75", "74");
         }
 
-        console.log('preventCheck', preventCheckMoves.filter(item => item != ""));
-        setShowPossibleWays(preventCheckMoves.filter(item => item != ""));
+        preventCheckMoves = preventCheckMoves.filter(item => item !== "");
+
+        console.log('preventCheck', preventCheckMoves);
+        setShowPossibleWays(preventCheckMoves);
+        return preventCheckMoves;
     }
 
     const movePiece = (chessPieceID) => {
@@ -160,23 +168,19 @@ function Provider({ children }) {
               newAxisY = Number(chessPieceID[1]);
 
         /* watch for rook's move. if it is the first rook's move - set castle value of this rook to "false" */
-        let newCastleWhite = castleWhite != false ? JSON.parse(JSON.stringify([...castleWhite])) : false,
-            newCastleBlack = castleBlack != false ? JSON.parse(JSON.stringify([...castleBlack])) : false;
+        let newCastleWhite = castleWhite !== false ? JSON.parse(JSON.stringify([...castleWhite])) : false,
+            newCastleBlack = castleBlack !== false ? JSON.parse(JSON.stringify([...castleBlack])) : false;
         if (pieceName === 'R') {
             if (pieceID === '00') {
-                newCastleWhite != false ? newCastleWhite[0] = false : false;
-                setCastleWhite(newCastleWhite);
+                setCastleWhite(newCastleWhite !== false ? newCastleWhite[0] = false : false);
             } else if (pieceID === '07') {
-                newCastleWhite != false ? newCastleWhite[1] = false : false;
-                setCastleWhite(newCastleWhite);
+                setCastleWhite(newCastleWhite !== false ? newCastleWhite[1] = false : false);
             }
         } else if (pieceName === "r") {
             if (pieceID === '70') {
-                newCastleBlack != false ? newCastleBlack[0] = false : false;
-                setCastleBlack(newCastleBlack);
+                setCastleBlack(newCastleBlack !== false ? newCastleBlack[0] = false : false);
             } else if (pieceID === '77') {
-                newCastleBlack != false ? newCastleBlack[1] = false : false;
-                setCastleBlack(newCastleBlack);
+                setCastleBlack(newCastleBlack !== false ? newCastleBlack[1] = false : false);
             }
         }
 
@@ -191,14 +195,13 @@ function Provider({ children }) {
             Literally, we just receive the square behind the pawn, that has just made an initial two-square advance.
         */
         if (passant[0]) {
-            if (pieceName === 'P' && newBoard[newAxisX - 1][newAxisY].f != "") {
+            if (pieceName === 'P' && newBoard[newAxisX - 1][newAxisY].f !== "") {
                 newBoard[newAxisX - 1][newAxisY].f = "";
             }
-            else if (pieceName === 'p' && newBoard[newAxisX + 1][newAxisY].f != "") {
+            else if (pieceName === 'p' && newBoard[newAxisX + 1][newAxisY].f !== "") {
                 newBoard[newAxisX + 1][newAxisY].f = "";
             }
         }
-
         if (pieceName === 'P' && oldAxisX + 2 === newAxisX) {
             setPassant([true, `${newAxisX - 1}${newAxisY}`]);
         } else if (pieceName === 'p' && (oldAxisX - 2 === newAxisX)) {
@@ -208,12 +211,12 @@ function Provider({ children }) {
         }
 
         /* finish castling at newBoard */
-        if (pieceName === 'K' && castleWhite != false) {
+        if (pieceName === 'K' && castleWhite !== false) {
             if (chessPieceID === '01') {newBoard[0][2].f = newBoard[0][0].f; newBoard[0][0].f = '';} 
             if (chessPieceID === '05') {newBoard[0][4].f = newBoard[0][7].f; newBoard[0][7].f = '';} 
             setBoard(newBoard);
         } else 
-        if (pieceName === 'k' && castleBlack != false) {
+        if (pieceName === 'k' && castleBlack !== false) {
             if (chessPieceID === '71') {newBoard[7][2].f = newBoard[7][0].f; newBoard[7][0].f = '';} 
             if (chessPieceID === '75') {newBoard[7][4].f = newBoard[7][7].f; newBoard[7][7].f = '';}
             setBoard(newBoard); 
@@ -240,6 +243,7 @@ function Provider({ children }) {
         setOrder(!order);
     };
 
+    /* gets a piece the player selected on a promotion bar and refresh the board */
     const getPromotedPiece = (value) => {
         const target = value.target.parentNode.children[0].innerHTML;
 
@@ -260,6 +264,26 @@ function Provider({ children }) {
         setOrder(!order);
     }
 
+    const isCheckmate = (board, reg) => {
+        const escapeCheckmate = [];
+        board.forEach((row, rowIndex) => row.forEach((square, colIndex) => {
+            if (reg.test(square.f)) {
+                let xy = [rowIndex]+[colIndex];
+                escapeCheckmate.push(algorithmSelection(square.f, xy));
+            }
+        }));
+        console.log("escapeChekmate", escapeCheckmate);
+        if (escapeCheckmate.flat().length === 0) setCheckmate(true);
+    }
+
+    useEffect(() => {
+        if (!order && check) {
+            isCheckmate(board, /[a-z]/);
+        } else if (order && check) {
+            isCheckmate(board, /[A-Z]/);
+        }
+    }, [check])
+
     function clearState() {
         console.log("CLEAR STATE");
         setPieceID('');
@@ -272,7 +296,7 @@ function Provider({ children }) {
     }, [board]);
 
     return (
-        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setCastleWhite, setCastleBlack, promotion, getPromotedPiece}}>
+        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setCastleWhite, setCastleBlack, promotion, getPromotedPiece, checkmate}}>
             {children}
         </ChessContext.Provider>
     )

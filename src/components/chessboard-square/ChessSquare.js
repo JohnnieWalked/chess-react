@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Piece from "react-chess-pieces";
-import useChessContext from "../hooks/use-chess-context";
+import useChessContext from "../../hooks/use-chess-context";
 import './chessSquare.scss';
 
 function ChessSquare({ square, id, showPossibleWaysClass }) {
@@ -8,7 +8,7 @@ function ChessSquare({ square, id, showPossibleWaysClass }) {
             blackKing, order, check, board, setCastleWhite, setCastleBlack } = useChessContext();
 
     const targetMove = (showPossibleWaysClass) => {
-        if (square.f != '' && showPossibleWaysClass[0] === id) {
+        if (square.f !== '' && showPossibleWaysClass[0] === id) {
             return 'dot_enemy';
         } else if (square.f === '' && showPossibleWaysClass[0] === id) {
             return 'dot';
@@ -20,17 +20,17 @@ function ChessSquare({ square, id, showPossibleWaysClass }) {
     useEffect(() => {
         if (square.f === "K") {
             /* responsible for allowing player to castle */
-            if (whiteKing != id && whiteKing != undefined) {
+            if (whiteKing !== id && whiteKing !== undefined) {
                 setCastleWhite(false);
             }
-            setWhiteKingID(id); console.log("Black king", id); 
+            setWhiteKingID(id); /* console.log("Black king", id); */ 
         } 
         if (square.f === "k") {
             /* responsible for allowing player to castle */
-            if (blackKing != id && blackKing != undefined) {
+            if (blackKing !== id && blackKing !== undefined) {
                 setCastleBlack(false);
             }
-            setBlackKingID(id); console.log("White king", id); 
+            setBlackKingID(id); /* console.log("White king", id);  */
         }
     }, [board]);
     

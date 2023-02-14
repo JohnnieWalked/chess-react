@@ -8,8 +8,8 @@ import { pushMove } from "./piece-movement-helper";
     Else - returns an array of possibleMoves;
 */
 function checkCastle(isCastle, preventCheckMoves, castleSquare, moveSquare) {
-    if (isCastle && isCastle != undefined && !preventCheckMoves.includes(moveSquare) && preventCheckMoves.includes(castleSquare)) {
-        return preventCheckMoves.filter(item => item != castleSquare);
+    if (isCastle && isCastle !== undefined && !preventCheckMoves.includes(moveSquare) && preventCheckMoves.includes(castleSquare)) {
+        return preventCheckMoves.filter(item => item !== castleSquare);
     } else {
         return preventCheckMoves;
     }
@@ -27,14 +27,14 @@ function castleWays(item, axisX, axisY, board, isCastle, i) {
     if (item === "K" || item === "k") {
         if (isCastle) {
             if (i < 0) {
-                if (pushMove(item, board, axisX, axisY, 0, -1) != undefined) {
+                if (pushMove(item, board, axisX, axisY, 0, -1) !== undefined) {
                     for (let j = -1; j > -3; j--) {
                         possibleMovement.push(pushMove(item, board, axisX, axisY, 0, j));
                     }
                 } 
             }
             if (i > 0) {
-                if (pushMove(item, board, axisX, axisY, 0, 1) != undefined) {
+                if (pushMove(item, board, axisX, axisY, 0, 1) !== undefined) {
                     for (let j = 1; j < 3; j++) {
                         possibleMovement.push(pushMove(item, board, axisX, axisY, 0, j));
                     }
@@ -44,7 +44,7 @@ function castleWays(item, axisX, axisY, board, isCastle, i) {
             possibleMovement.push(pushMove(item, board, axisX, axisY, 0, i));
         }
     }
-    console.log("castleWays", possibleMovement);
+    console.log("castleWays or move", possibleMovement);
     if (possibleMovement.some(item => item === true)) return true;
     return possibleMovement;
 }

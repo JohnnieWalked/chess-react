@@ -1,20 +1,20 @@
-import useChessContext from "../hooks/use-chess-context";
-import ChessSquare from "./ChessSquare";
-import PlayerBar from "./PlayerBar";
-import Piece from "react-chess-pieces";
+import useChessContext from "../../hooks/use-chess-context";
+import ChessSquare from "../chessboard-square/ChessSquare";
+import PromotionBar from "../chessboard-promoBar/PromotionBar";
+import PlayerBar from "../chessboard-playerBar/PlayerBar";
 import "./chessBoard.scss";
 
 function ChessBoard() {
-    const { board, pieceID, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, promotion, getPromotedPiece } = useChessContext();
+    const { board, pieceID, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, promotion, getPromotedPiece, checkmate } = useChessContext();
 
     /* Gets the square component and is responsible for its movement, also allows you to cancel the move and responsible for player's order */
     const getPiece = (chessPiece) => {
         console.log("GET PIECE");
         let pieceTargetName = chessPiece.firstChild.innerHTML;
         if (pieceID === "" && pieceTargetName === "") return;
-        if (pieceID != "" && pieceTargetName === "") clearState(); 
+        if (pieceID !== "" && pieceTargetName === "") clearState(); 
 
-        if (chessPiece.classList.contains("dot") 
+        if (chessPiece.classList.contains("dot")
             || chessPiece.classList.contains("dot_enemy")) movePiece(chessPiece.id);
 
         if (order && /[a-z]/.test(pieceTargetName)) return; 
@@ -32,7 +32,7 @@ function ChessBoard() {
     const renderBoard = board.map((item, rowIndex) => {
         return (
             <div className={`grid grid-cols-8 relative 
-                ${promotion ? "pointer-events-none blur-[.2rem]" : 'pointer-events-auto blur-0'}`} 
+                ${promotion || checkmate ? "pointer-events-none blur-[.2rem]" : 'pointer-events-auto blur-0'}`} 
                 key={rowIndex} 
                 onClick={(e) => getPiece(e.target)}
             > 
@@ -54,37 +54,13 @@ function ChessBoard() {
     return (
         <div className="chessboard w-[30rem]">
             <PlayerBar />
-            <div className="grid self-center z-0">
-                {/* order ? renderBoard.reverse() : */ renderBoard}
-            </div>
+                <div className="grid self-center z-0">
+                    {/* order ? renderBoard.reverse() : */ renderBoard}
+                </div>
             {promotion ? <PromotionBar order={order} getPromotedPiece={getPromotedPiece} /> : false}
             <PlayerBar />
         </div>
     );
 }
-
-const PromotionBar = ({getPromotedPiece, order}) => {
-    let pieces = ['R', 'N', 'B', 'Q'];
-    if (!order) pieces = pieces.map(item => item.toLowerCase());
-
-    const renderItems = pieces.map((item, i) => {
-        return (
-            <div onClick={(e) => getPromotedPiece(e)} className="w-16 h-14" key={i}>
-                <span className="hidden">{item}</span>
-                <Piece piece={item} />
-            </div>
-        )
-    })
-
-    return (
-        <div className="promotionBar text-[1.2rem] text-center text-sky-50 mt-3 mb-3">
-            <div>Pawn Promotion Bar</div>
-            <div className="w-full h-14 flex items-center justify-center bg-skyrim-bar bg-contain bg-center bg-no-repeat">
-                {renderItems}
-            </div>
-        </div>
-    )
-}
-
 
 export default ChessBoard;
