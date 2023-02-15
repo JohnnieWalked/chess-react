@@ -29,7 +29,7 @@ function queen(item, xy, board) {
     /* Right Bottom */
     possibleMovement.push(loop(1, 1, item, axisX, axisY, board));
 
-    return possibleMovement.flat().filter(item => item != "");
+    return possibleMovement.flat().filter(item => item !== "");
 }
 
 export default queen;

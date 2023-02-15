@@ -22,7 +22,7 @@ function rook(item, xy, board) {
     */
     if (item === 'K' || item === 'k') return possibleMovement.some(item => item === true);
 
-    return possibleMovement.flat().filter(item => item != "");
+    return possibleMovement.flat().filter(item => item !== "");
 }
 
 export default rook;

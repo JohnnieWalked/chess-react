@@ -11,9 +11,8 @@ import { checkCastle } from "../utils/castling";
 const ChessContext = createContext();
 
 function Provider({ children }) {
-    /* chess field (white - capital letters, black - small) */
-    /* First parameter - row, second - column */
-    const [board, setBoard] = useState([
+
+    const boardTemplate = [
         [{c: 0, f: 'R'}, {c: 1, f: 'N'}, {c: 0, f: 'B'}, {c: 1, f: 'K'},
         {c: 0, f: 'Q'}, {c: 1, f: 'B'}, {c: 0, f: 'N'}, {c: 1, f: 'R'}],
         [{c: 1, f: 'P'}, {c: 0, f: 'P'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}, 
@@ -32,7 +31,11 @@ function Provider({ children }) {
         {c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'p'}],
         [{c: 1, f: 'r'}, {c: 0, f: 'n'}, {c: 1, f: 'b'}, {c: 0, f: 'k'}, 
         {c: 1, f: 'q'}, {c: 0, f: 'b'}, {c: 1, f: 'n'}, {c: 0, f: 'r'}],
-    ]);
+    ];
+
+    /* chess field (white - capital letters, black - small) */
+    /* First parameter - row, second - column */
+    const [board, setBoard] = useState(boardTemplate);
 
     /* watch kings locations (id) */
     const [whiteKing, setWhiteKingID] = useState();
@@ -194,7 +197,7 @@ function Provider({ children }) {
             (depends on color); 
             Literally, we just receive the square behind the pawn, that has just made an initial two-square advance.
         */
-        if (passant[0]) {
+        if (passant[0] && `${newAxisX}` + `${newAxisY}` === passant[1]) {
             if (pieceName === 'P' && newBoard[newAxisX - 1][newAxisY].f !== "") {
                 newBoard[newAxisX - 1][newAxisY].f = "";
             }
@@ -264,6 +267,10 @@ function Provider({ children }) {
         setOrder(!order);
     }
 
+    /* 
+    responsible for calculating a checkmate; isCheckmate() looks through a board and 
+        finds all moves to prevent check; if array of moves is empty - means checkmate   
+    */
     const isCheckmate = (board, reg) => {
         const escapeCheckmate = [];
         board.forEach((row, rowIndex) => row.forEach((square, colIndex) => {
@@ -276,6 +283,7 @@ function Provider({ children }) {
         if (escapeCheckmate.flat().length === 0) setCheckmate(true);
     }
 
+    /* if king was checked - function isCheckmate will be triggered */
     useEffect(() => {
         if (!order && check) {
             isCheckmate(board, /[a-z]/);
@@ -291,12 +299,25 @@ function Provider({ children }) {
         setShowPossibleWays([]);
     }
 
+    function restart() {
+        clearState();
+        setBoard(boardTemplate);
+        setWhiteKingID();
+        setBlackKingID();
+        setCastleWhite([true, true]);
+        setCastleBlack([true, true]);
+        setCheck(false);
+        setCheckmate(false);
+        setOrder(true);
+        setPassant([false, '']);
+    }
+
     useEffect(() => {
         clearState();
     }, [board]);
 
     return (
-        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setCastleWhite, setCastleBlack, promotion, getPromotedPiece, checkmate}}>
+        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setCastleWhite, setCastleBlack, promotion, getPromotedPiece, checkmate, setCheckmate, restart}}>
             {children}
         </ChessContext.Provider>
     )

@@ -1,0 +1,53 @@
+@media (max-width: 575px) {
+    .app {
+        font-size: 11px;
+    }
+
+    .sidebar {
+        width: 200px;
+        font-size: 11px;
+        margin-left: 30px;
+        margin-right: 5px;
+        &-list {
+            margin-left: 10px;
+        }
+        li {
+            &:hover {
+                &::after {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .modal {
+        font-size: 11px;
+        &_choice {
+            margin-top: 15px;
+            span {
+                &:hover {
+                    &::after {
+                        display: none;
+                    }
+                    &::before {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: 767px) {
+    .app {
+        font-size: 1.2rem;
+    }
+
+    .sidebar {
+        font-size: 1.6rem;
+    }
+
+    .modal {
+        font-size: 1.5rem;
+    }
+}

@@ -22,7 +22,7 @@ function pawn(item, xy, board, enPassant = [false, '']) {
             possibleMovement.push(`${axisX + shiftX}${axisY + shiftY}`);
         }
 
-        if (board[axisX + shiftX][axisY + shiftY] != undefined 
+        if (board[axisX + shiftX][axisY + shiftY] !== undefined 
             && reg.test(board[axisX + shiftX][axisY + shiftY].f)) {
 
                 /* 
@@ -52,8 +52,8 @@ function pawn(item, xy, board, enPassant = [false, '']) {
     /* move on 1 square */ 
     /* check for barrier ahead */
     function checkPossibleBarrier(shiftX) {
-        if (board[axisX + shiftX][axisY].f != "") {
-            possibleMovement = possibleMovement.filter(item => item != `${axisX + shiftX}${axisY}`);
+        if (board[axisX + shiftX][axisY].f !== "") {
+            possibleMovement = possibleMovement.filter(item => item !== `${axisX + shiftX}${axisY}`);
         }
         return possibleMovement;
     }

@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'skyrim-logo': "url('/img/skyrim-background.jpg')",
-        'skyrim-night': "url('/img/skyrim-night.webp')",
-        'skyrim-bar': "url('/img/promotionBar.png')",
+        'skyrim-night': "url('/img/night2.webp')",
+        'skyrim-bar': "url('/img/promotionBar.webp')",
+        'skyrim-modal': "url('/img/modal.webp')",
       }
     },
   },

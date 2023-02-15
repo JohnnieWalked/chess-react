@@ -33,7 +33,7 @@ function knight(item, xy, board) {
     */
     if (item === 'K' || item === 'k') return possibleMovement.some(item => item === true);
 
-    return possibleMovement.filter(item => item != undefined);
+    return possibleMovement.filter(item => item !== undefined);
 }
 
 export default knight;

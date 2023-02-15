@@ -12,3 +12,37 @@
         pointer-events: none;
     }
 }
+
+.modal {
+    font-family: 'Futura Medium';
+    font-size: 1.6rem;
+    span {
+        position: relative;
+        width: 70px;
+        height: auto;
+        &:hover {
+            color: rgb(250, 250, 250);
+            cursor: pointer;
+            &::before {
+                position: absolute;
+                content: '';
+                width: 15px;
+                height: 15px;
+                background: url('../../icons/left-choose.png') center/contain no-repeat;
+                left: 2px;
+                top: 4px;
+                transform: translateY(50%);
+            }
+            &::after {
+                position: absolute;
+                content: '';
+                width: 15px;
+                height: 15px;
+                background: url('../../icons/right-choose.png') center/contain no-repeat;
+                right: 2px;
+                top: 4px;
+                transform: translateY(50%);
+            }
+        }
+    }
+}
