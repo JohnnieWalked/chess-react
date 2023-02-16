@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/chess-react/static/css/main.31220464.css",
+    "main.js": "/chess-react/static/js/main.7d3a3214.js",
+    "static/media/night2.webp": "/chess-react/static/media/night2.b044d9a9496f45c98f0b.webp",
+    "static/media/modal.webp": "/chess-react/static/media/modal.922f27b4649709aed119.webp",
+    "static/media/Futura-condensed-medium.otf": "/chess-react/static/media/Futura-condensed-medium.2f73dbcc8ae98e67cb5b.otf",
+    "static/media/Futura-Condensed-Light.ttf": "/chess-react/static/media/Futura-Condensed-Light.fcb267607f17cfac27ca.ttf",
+    "static/media/promotionBar.webp": "/chess-react/static/media/promotionBar.0fbd822fca2ccd98b425.webp",
+    "index.html": "/chess-react/index.html",
+    "main.31220464.css.map": "/chess-react/static/css/main.31220464.css.map",
+    "main.7d3a3214.js.map": "/chess-react/static/js/main.7d3a3214.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.31220464.css",
+    "static/js/main.7d3a3214.js"
+  ]
+}
