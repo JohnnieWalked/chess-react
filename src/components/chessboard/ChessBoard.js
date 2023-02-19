@@ -1,11 +1,13 @@
 import useChessContext from "../../hooks/use-chess-context";
 import ChessSquare from "../chessboard-square/ChessSquare";
 import PromotionBar from "../chessboard-promoBar/PromotionBar";
-import PlayerBar from "../chessboard-playerBar/PlayerBar";
 import "./chessBoard.scss";
+import { useState, useEffect } from "react";
 
-function ChessBoard() {
-    const { board, setBoard, pieceID, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, promotion, getPromotedPiece, checkmate, setCheckmate, restart } = useChessContext();
+function ChessBoard({ rotate }) {
+    const { board, pieceID, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, promotion, getPromotedPiece, checkmate, setCheckmate, restart } = useChessContext();
+
+    const [show, setShow] = useState(true);
 
     /* Gets the square component and is responsible for its movement, also allows you to cancel the move and responsible for player's order */
     const getPiece = (chessPiece) => {
@@ -44,6 +46,7 @@ function ChessBoard() {
                             id={id} 
                             square={square} 
                             showPossibleWaysClass={addLabelForClass(id, showPossibleWays)} 
+                            rotate={rotate}
                         />
                     )
                 })}
@@ -51,34 +54,40 @@ function ChessBoard() {
         )
     });
 
+    useEffect(() => {
+        setShow(false);
+        setTimeout(() => {
+            setShow(true)
+        }, 800)
+    }, [rotate])
+
     return (
-        <div className="chessboard w-[30rem]">
-            <PlayerBar />
-                <div className="grid self-center justify-items-center z-0 relative">
-                    {order ? renderBoard.reverse() : renderBoard}
-                    {checkmate ?    <Modal 
-                                    order={order} 
-                                    setBoard={setBoard} 
-                                    setCheckmate={setCheckmate}
-                                    restart={restart} 
-                                    clearState={clearState}  /> : null}
-                </div>
-            {promotion ? <PromotionBar order={order} getPromotedPiece={getPromotedPiece} /> : false}
-            <PlayerBar />
+        <div className={`rotate-container w-[400px] h-[400px]`}>
+            <div className={`rotate grid self-center justify-items-center z-0 relative
+                             ${rotate ? 'rotate_active' : ''}
+                             ${show ? 'rotate_active_show' : 'rotate_active_hide'} `}>
+                {renderBoard.reverse()}
+                {checkmate ? <Modal 
+                             order={order} 
+                             setCheckmate={setCheckmate}
+                             restart={restart} /> : null}
+            </div>
+        {promotion ? <PromotionBar order={order} getPromotedPiece={getPromotedPiece} /> : false}
         </div>
     );
 }
 
+/*  modal window ----------------------------------------------------------------------  */
 const Modal = ({order, setCheckmate, restart}) => {
 
     return (
-        <div className="modal w-[91%] h-1/2 absolute flex flex-col justify-center items-center self-center bg-skyrim-modal bg-center bg-contain bg-no-repeat backdrop-blur-[.2rem] text-zinc-400 text-center">
+        <div className="modal-choice w-[91%] h-1/2 absolute flex flex-col justify-center items-center self-center bg-skyrim-modal bg-center bg-contain bg-no-repeat backdrop-blur-[.2rem] text-zinc-400 text-center">
             <div className="tracking-[0.045rem]">
                 {!order ? "White wins" : "Black wins"}
                 <div className="">Rematch?</div>
             </div>
-            <div className="modal_choice mt-12 flex w-1/2 justify-around z-10">
-                <span onClick={() => restart()}>Yes</span>
+            <div className="mt-12 flex w-1/2 justify-around z-10">
+                <span onClick={restart}>Yes</span>
                 <span onClick={() => setCheckmate(false)}>No</span>
             </div>
         </div>

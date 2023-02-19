@@ -1,4 +1,11 @@
 .chessSquare {
+    transform-style: preserve-3d;
+    transition: transform .7s;
+    transition-timing-function: cubic-bezier(1, 0, 0.31, 1.07);
+    &_rotate {
+        transform: rotateX(180deg);
+    }
+
     svg {
         pointer-events: none;
         width: 100%;
@@ -25,9 +32,21 @@
 }
 
 .check {
-    -webkit-box-shadow: inset 0px 0px 15px 0px rgb(255 14 14);
-    -moz-box-shadow: inset 0px 0px 15px 0px rgb(255 14 14);
-    box-shadow: inset 0px 0px 15px 0px rgb(255 14 14);
+    -webkit-box-shadow: inset 0px 0px 15px 0px rgba(255, 14, 14, .6);
+    -moz-box-shadow: inset 0px 0px 15px 0px rgba(255, 14, 14, .6);
+    box-shadow: inset 0px 0px 15px 0px rgba(255, 14, 14, .6);
+}
+
+.pastPosition{
+    -webkit-box-shadow: inset 0px 0px 6px 1px rgb(228 255 0 / 50%);
+    -moz-box-shadow: inset 0px 0px 6px 1px rgb(228 255 0 / 50%);
+    box-shadow: inset 0px 0px 6px 1px rgb(228 255 0 / 50%);
+}
+
+.currentPosition {
+    -webkit-box-shadow: inset 0px 0px 6px 1px rgb(228 255 0);
+    -moz-box-shadow: inset 0px 0px 6px 1px rgb(228 255 0);
+    box-shadow: inset 0px 0px 6px 1px rgb(228 255 0);
 }
 
 

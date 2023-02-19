@@ -67,27 +67,30 @@ function Provider({ children }) {
     /* pawn promotion */
     const [promotion, setPromotion] = useState(false);
 
+    /* show past and current position of piece */
+    const [highlight, setHighligh] = useState([]);
+
     const algorithmSelection = (item, xy) => {
         let temp = item.toLowerCase();
         switch (temp) {
-            case 'p': temp = pawn(item, xy, board, passant); console.log("pawn", temp);
+            case 'p': temp = pawn(item, xy, board, passant); /* console.log("pawn", temp); */
                 return preventCheck(item, xy, temp);
 
-            case 'r': temp = rook(item, xy, board); console.log("rook", temp); 
+            case 'r': temp = rook(item, xy, board); /* console.log("rook", temp); */ 
                 return preventCheck(item, xy, temp);
 
-            case 'n': temp = knight(item, xy, board); console.log("knight", temp); 
+            case 'n': temp = knight(item, xy, board); /* console.log("knight", temp); */ 
                 return preventCheck(item, xy, temp);
 
-            case 'b': temp = bishop(item, xy, board); console.log("bishop", temp);
+            case 'b': temp = bishop(item, xy, board); /* console.log("bishop", temp); */
                 return preventCheck(item, xy, temp);
 
-            case 'q': temp = queen(item, xy, board); console.log("queen", temp); 
+            case 'q': temp = queen(item, xy, board); /* console.log("queen", temp); */ 
                 return preventCheck(item, xy, temp);
 
             case 'k': if (check) { temp = king(item, xy, board) } 
                       else { temp = king(item, xy, board, castleWhite, castleBlack) } 
-                      console.log("king", temp); 
+                      /* console.log("king", temp); */ 
                       return preventCheck(item, xy, temp);
             default: return;
         }
@@ -100,7 +103,6 @@ function Provider({ children }) {
 
     /* preventCheck() sorts possible movements to avoid the check */
     const preventCheck = (pieceName, pieceID, possibleWays) => {
-        console.log("PREVENT CHECK");
         const oldAxisX = pieceID[0],
               oldAxisY = pieceID[1];
 
@@ -242,6 +244,9 @@ function Provider({ children }) {
         */
         setCheck(!order ? isCheck('K', whiteKing, newBoard) : isCheck('k', blackKing, newBoard));
 
+        /* responsible for highlighting a move */
+        setHighligh([pieceID, chessPieceID]);
+
         /* after move - change order */
         setOrder(!order);
     };
@@ -279,7 +284,6 @@ function Provider({ children }) {
                 escapeCheckmate.push(algorithmSelection(square.f, xy));
             }
         }));
-        console.log("escapeChekmate", escapeCheckmate);
         if (escapeCheckmate.flat().length === 0) setCheckmate(true);
     }
 
@@ -309,6 +313,7 @@ function Provider({ children }) {
         setCheck(false);
         setCheckmate(false);
         setOrder(true);
+        setHighligh([]);
         setPassant([false, '']);
     }
 
@@ -317,7 +322,7 @@ function Provider({ children }) {
     }, [board]);
 
     return (
-        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setCastleWhite, setCastleBlack, promotion, getPromotedPiece, checkmate, setCheckmate, restart}}>
+        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setCastleWhite, setCastleBlack, promotion, getPromotedPiece, checkmate, setCheckmate, restart, highlight}}>
             {children}
         </ChessContext.Provider>
     )

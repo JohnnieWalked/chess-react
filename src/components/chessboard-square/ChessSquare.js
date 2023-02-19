@@ -3,9 +3,9 @@ import Piece from "react-chess-pieces";
 import useChessContext from "../../hooks/use-chess-context";
 import './chessSquare.scss';
 
-function ChessSquare({ square, id, showPossibleWaysClass }) {
+function ChessSquare({ square, id, showPossibleWaysClass, rotate }) {
     const { setWhiteKingID, setBlackKingID, whiteKing, 
-            blackKing, order, check, board, setCastleWhite, setCastleBlack } = useChessContext();
+            blackKing, order, check, board, setCastleWhite, setCastleBlack, highlight } = useChessContext();
 
     const targetMove = (showPossibleWaysClass) => {
         if (square.f !== '' && showPossibleWaysClass[0] === id) {
@@ -40,6 +40,9 @@ function ChessSquare({ square, id, showPossibleWaysClass }) {
                         ${targetMove(showPossibleWaysClass)}
                         ${order && check && id === whiteKing ? 'check' : ''}
                         ${!order && check && id === blackKing ? 'check' : ''}
+                        ${rotate ? `chessSquare_rotate` : ''}
+                        ${highlight[0] === id ? 'pastPosition' : ''}
+                        ${highlight[1] === id ? 'currentPosition' : ''}
                         `}
         id={id}>
             <span>{square.f}</span> 

@@ -1,1 +1,9 @@
+@import 'modal/modal';
+@import 'footer';
+
 @import 'media';
+
+.container {
+    margin: 0 auto;
+    width: 1024px;
+}
