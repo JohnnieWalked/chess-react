@@ -15,7 +15,7 @@ function App() {
 	}
 
 	return (
-		<div className="h-screen flex flex-col justify-between">
+		<div className="h-screen flex flex-col justify-between bg-skyrim-night bg-no-repeat bg-cover">
 			<div className="container">
 
 				<div className="h-screen flex items-center justify-around justify-items-center">
