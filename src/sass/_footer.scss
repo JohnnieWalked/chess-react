@@ -10,8 +10,9 @@
         font-family: 'Futura Medium';
         font-size: 12px;
         letter-spacing: .5px;
-        color: rgb(161 161 170);
+        color: $lightGray-text-color;
         &:hover {
+            color: $whiteHover-text-color;
             text-decoration: none;
         }
     }

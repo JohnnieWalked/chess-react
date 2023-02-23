@@ -1,9 +1,18 @@
-@import 'modal/modal';
+@import 'vars';
+
+@import 'app';
 @import 'footer';
+
+@import 'modal/modal';
 
 @import 'media';
 
 .container {
     margin: 0 auto;
-    width: 1024px;
+    max-width: 1024px;
 }
+
+* {
+    box-sizing: border-box;
+}
+  

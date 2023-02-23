@@ -1,49 +1,181 @@
-@media (max-width: 575px) {
-    .sidebar {
-        width: 200px;
-        font-size: 11px;
-        margin-left: 30px;
-        margin-right: 5px;
-        &-list {
-            margin-left: 10px;
-        }
-        li {
-            &:hover {
-                &::after {
-                    display: none;
-                }
-            }
-        }
-    }
+@media (max-width: 1200px) {
 
-    .modal {
-        font-size: 11px;
-        &_choice {
-            margin-top: 15px;
-            span {
+    .sidebar {
+        font-size: 1.3rem;
+        width: 200px;
+        margin-right: 30px;
+        
+        .history {
+            width: 100px;
+            left: -55%;
+        }
+
+        &-list {
+            &_item {
+                height: 40px;
                 &:hover {
                     &::after {
-                        display: none;
-                    }
-                    &::before {
-                        display: none;
+                        width: 30px;
+                        height: 30px;
+                        top: 50%;
+                        transform: translateY(-50%);
                     }
                 }
             }
         }
     }
 }
-
-@media (min-width: 767px) {
-    .app {
-        font-size: 1.2rem;
+/* ------------------------------------------------------------------------------------------------------------ */
+@media (max-width: 991px) {
+    .board {
+        &-container {
+            max-width: 300px;
+        }
     }
 
-    .sidebar {
-        font-size: 1.6rem;
+    .row {
+        font-size: .9rem;
+        transform: rotateZ(270deg) translateX(-53.5%) translateY(-750%);
+    }
+
+    .col {
+        font-size: .9rem;
+    }
+
+    .container {
+        padding: 0 21px 0 21px;
     }
 
     .modal {
-        font-size: 1.5rem;
+        font-size: 1.1rem;
+        &_header {
+            margin-bottom: 0;
+        }
+        &_content {
+            margin-top: 25px;
+        }
+        .choice {
+            &:hover {
+                &::after {
+                    width: 12px;
+                }
+                &::before {
+                    width: 12px;
+                }
+            }
+        }
+    }
+}
+/* ----------------------------------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+    .board {
+        &-container {
+            max-width: 250px;
+        }
+    }
+
+    .col {
+        font-size: .8rem;
+    }
+
+    .row {
+        font-size: .8rem;
+        transform: rotateZ(270deg) translateX(-53.5%) translateY(-700%);
+    }
+
+    .sidebar {
+        font-size: 1rem;
+        width: 150px;
+        margin-right: 30px;
+
+        .history {
+            width: 90px;
+            height: 250px;
+            left: -66%;
+            &-item {
+                font-size: .8rem;
+                width: 55px;
+            }
+        }
+
+        &-list {
+            line-height: 1.5;
+            margin-left: 15px;
+            &_item {
+                height: 30px;
+                &:hover {
+                    &::after {
+                        width: 20px;
+                        height: 20px;
+                        top: 50%;
+                        transform: translateY(-60%);
+                    }
+                }
+            }
+        }
+    }
+
+    .modal {
+        font-size: 1rem;
+        &_header {
+            margin-bottom: 0;
+        }
+        &_content {
+            margin-top: 25px;
+        }
+    }
+
+    .footer {
+        height: 20px;
+        a {
+            font-size: 10px;
+        }
+    }
+}
+ /* -------------------------------------------------------------------------------------------------------- */
+@media (max-width: 575px) {
+    .app {
+        flex-direction: column-reverse;
+        height: 100vh;
+        justify-self: center;
+    }
+
+    .sidebar {
+        height: 100px;
+        width: 50%;
+        margin-left: 30px;
+        &::before {
+            height: 100%;
+            border-right: none;
+            border-left: none;
+            border-top: 3px solid $lightGray-color;
+            border-bottom: 3px solid $lightGray-color;
+        }
+    }
+    
+    .modal {
+        font-size: .8rem;
+        &_header {
+            margin-bottom: 0;
+        }
+        &_content {
+            margin-top: 25px;
+        }
+    }
+    .choice {
+        &:hover {
+            &::after {
+                display: none;
+            }
+            &::before {
+                display: none;
+            }
+        }
+    }
+    .footer {
+        height: 15px;
+        a {
+            font-size: 8px;
+        }
     }
 }

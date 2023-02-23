@@ -1,4 +1,5 @@
 import Piece from "react-chess-pieces";
+import './promotionBar.scss';
 
 /* responsible for showing a promotion bar */
 const PromotionBar = ({getPromotedPiece, order}) => {
@@ -15,7 +16,7 @@ const PromotionBar = ({getPromotedPiece, order}) => {
     })
 
     return (
-        <div className="promotionBar text-[1.2rem] text-center text-sky-50 mt-3 mb-3">
+        <div className="promotionBar absolute z-10 w-full flex flex-col justify-center items-center self-center text-[1.2rem] text-center text-sky-50 mt-3 mb-3">
             <div>Pawn Promotion Bar</div>
             <div className={`w-full h-14 flex items-center justify-center bg-skyrim-bar bg-contain bg-center bg-no-repeat`}>
                 {renderItems}

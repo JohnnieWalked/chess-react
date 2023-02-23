@@ -1,0 +1,26 @@
+@mixin choice {
+    .choice {
+        position: relative;
+        width: 70px;
+        &:hover {
+            color: rgb(250, 250, 250);
+            cursor: pointer;
+            &::before {
+                position: absolute;
+                content: '';
+                width: 15px;
+                height: 100%;
+                background: url('../../assets/icons/left-choose.png') center center/contain no-repeat;
+                left: 0;
+            }
+            &::after {
+                position: absolute;
+                content: '';
+                width: 15px;
+                height: 100%;
+                background: url('../../assets/icons/right-choose.png') center center/contain no-repeat;
+                right: 0;
+            }
+        }
+    }
+}

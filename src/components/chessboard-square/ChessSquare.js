@@ -3,10 +3,11 @@ import Piece from "react-chess-pieces";
 import useChessContext from "../../hooks/use-chess-context";
 import './chessSquare.scss';
 
-function ChessSquare({ square, id, showPossibleWaysClass, rotate }) {
+function ChessSquare({ square, id, showPossibleWaysClass, rotate, move }) {
     const { setWhiteKingID, setBlackKingID, whiteKing, 
-            blackKing, order, check, board, setCastleWhite, setCastleBlack, highlight } = useChessContext();
+            blackKing, order, check, board, setRooksCastleWhite, setRooksCastleBlack } = useChessContext();
 
+    /* responsible for toggling class - if allied piece is about to hit an enemy piece  */
     const targetMove = (showPossibleWaysClass) => {
         if (square.f !== '' && showPossibleWaysClass[0] === id) {
             return 'dot_enemy';
@@ -19,30 +20,32 @@ function ChessSquare({ square, id, showPossibleWaysClass, rotate }) {
 
     useEffect(() => {
         if (square.f === "K") {
-            /* responsible for allowing player to castle */
+            /* if white king makes first move, set castling to "FALSE" 
+                - (visit context/chess.js for more explanation) */
             if (whiteKing !== id && whiteKing !== undefined) {
-                setCastleWhite(false);
+                setRooksCastleWhite(false);
             }
-            setWhiteKingID(id); /* console.log("Black king", id); */ 
+            setWhiteKingID(id);
         } 
         if (square.f === "k") {
-            /* responsible for allowing player to castle */
+            /* if black king makes first move, set castling to "FALSE"
+                - (visit context/chess.js for more explanation) */
             if (blackKing !== id && blackKing !== undefined) {
-                setCastleBlack(false);
+                setRooksCastleBlack(false);
             }
-            setBlackKingID(id); /* console.log("White king", id);  */
+            setBlackKingID(id);
         }
     }, [board]);
     
     return (
         <div className={`chessSquare w-full h-full flex items-center justify-center relative
-                        ${square.c === 0 ? 'bg-[#788592]' : 'bg-[#242D38]'}
+                        ${square.c === 1 ? 'bg-[#788592]' : 'bg-[#242D38]'}
                         ${targetMove(showPossibleWaysClass)}
                         ${order && check && id === whiteKing ? 'check' : ''}
                         ${!order && check && id === blackKing ? 'check' : ''}
                         ${rotate ? `chessSquare_rotate` : ''}
-                        ${highlight[0] === id ? 'pastPosition' : ''}
-                        ${highlight[1] === id ? 'currentPosition' : ''}
+                        ${move[0] === id ? 'pastPosition' : ''}
+                        ${move[1] === id ? 'currentPosition' : ''}
                         `}
         id={id}>
             <span>{square.f}</span> 

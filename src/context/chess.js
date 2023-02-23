@@ -7,31 +7,34 @@ import queen from "../pieceMovement/queen";
 import king from "../pieceMovement/king";
 import isCheck from "../utils/isCheck";
 import { checkCastle } from "../utils/castling";
+import moveNotation from "../utils/moveNotation";
 
 const ChessContext = createContext();
 
+const boardTemplate = [
+    [{c: 0, f: 'R'}, {c: 1, f: 'N'}, {c: 0, f: 'B'}, {c: 1, f: 'Q'},
+    {c: 0, f: 'K'}, {c: 1, f: 'B'}, {c: 0, f: 'N'}, {c: 1, f: 'R'}],
+    [{c: 1, f: 'P'}, {c: 0, f: 'P'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}, 
+    {c: 1, f: 'P'}, {c: 0, f: 'P'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}],
+
+    [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, 
+    {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}],
+    [{c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, 
+    {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}],
+    [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, 
+    {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}],
+    [{c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, 
+    {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}],
+
+    [{c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'p'}, 
+    {c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'p'}],
+    [{c: 1, f: 'r'}, {c: 0, f: 'n'}, {c: 1, f: 'b'}, {c: 0, f: 'q'}, 
+    {c: 1, f: 'k'}, {c: 0, f: 'b'}, {c: 1, f: 'n'}, {c: 0, f: 'r'}],
+];
+
 function Provider({ children }) {
 
-    const boardTemplate = [
-        [{c: 0, f: 'R'}, {c: 1, f: 'N'}, {c: 0, f: 'B'}, {c: 1, f: 'K'},
-        {c: 0, f: 'Q'}, {c: 1, f: 'B'}, {c: 0, f: 'N'}, {c: 1, f: 'R'}],
-        [{c: 1, f: 'P'}, {c: 0, f: 'P'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}, 
-        {c: 1, f: 'P'}, {c: 0, f: 'P'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}],
-
-        [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, 
-        {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}],
-        [{c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, 
-        {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}],
-        [{c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, 
-        {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}],
-        [{c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}, 
-        {c: 1, f: ''}, {c: 0, f: ''}, {c: 1, f: ''}, {c: 0, f: ''}],
-
-        [{c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'p'}, 
-        {c: 0, f: 'p'}, {c: 1, f: 'p'}, {c: 0, f: 'p'}, {c: 1, f: 'p'}],
-        [{c: 1, f: 'r'}, {c: 0, f: 'n'}, {c: 1, f: 'b'}, {c: 0, f: 'k'}, 
-        {c: 1, f: 'q'}, {c: 0, f: 'b'}, {c: 1, f: 'n'}, {c: 0, f: 'r'}],
-    ];
+    const [counter, setCounter] = useState(1);
 
     /* chess field (white - capital letters, black - small) */
     /* First parameter - row, second - column */
@@ -41,9 +44,10 @@ function Provider({ children }) {
     const [whiteKing, setWhiteKingID] = useState();
     const [blackKing, setBlackKingID] = useState();
 
-    /* responsible for castling; idea - rook1, king, rook2 */
-    const [castleWhite, setCastleWhite] = useState([true, true]);
-    const [castleBlack, setCastleBlack] = useState([true, true]);
+    /* responsible for castling; idea - rook1, rook2; 
+        BUT if black/white king makes first move - set castling to "FALSE" */
+    const [rooksCastleWhite, setRooksCastleWhite] = useState([true, true]);
+    const [rooksCastleBlack, setRooksCastleBlack] = useState([true, true]);
     
     /* resposible for showing a check */
     const [check, setCheck] = useState(false);
@@ -68,7 +72,7 @@ function Provider({ children }) {
     const [promotion, setPromotion] = useState(false);
 
     /* show past and current position of piece */
-    const [highlight, setHighligh] = useState([]);
+    const [move, setMove] = useState([]);
 
     const algorithmSelection = (item, xy) => {
         let temp = item.toLowerCase();
@@ -89,7 +93,7 @@ function Provider({ children }) {
                 return preventCheck(item, xy, temp);
 
             case 'k': if (check) { temp = king(item, xy, board) } 
-                      else { temp = king(item, xy, board, castleWhite, castleBlack) } 
+                      else { temp = king(item, xy, board, rooksCastleWhite, rooksCastleBlack) } 
                       /* console.log("king", temp); */ 
                       return preventCheck(item, xy, temp);
             default: return;
@@ -150,12 +154,12 @@ function Provider({ children }) {
         });
 
         /* visit file "castling.js" for explanation */
-        if (pieceName === "K" && castleWhite !== false) {
-            preventCheckMoves = checkCastle(castleWhite[0], preventCheckMoves, "01", "02");
-            preventCheckMoves = checkCastle(castleWhite[1], preventCheckMoves, "05", "04");
-        } else if (pieceName === "k" && castleBlack !== false) {
-            preventCheckMoves = checkCastle(castleBlack[0], preventCheckMoves, "71", "72");
-            preventCheckMoves = checkCastle(castleBlack[1], preventCheckMoves, "75", "74");
+        if (pieceName === "K" && rooksCastleWhite !== false) {
+            preventCheckMoves = checkCastle(rooksCastleWhite[0], preventCheckMoves, "02", "03");
+            preventCheckMoves = checkCastle(rooksCastleWhite[1], preventCheckMoves, "06", "05");
+        } else if (pieceName === "k" && rooksCastleBlack !== false) {
+            preventCheckMoves = checkCastle(rooksCastleBlack[0], preventCheckMoves, "72", "73");
+            preventCheckMoves = checkCastle(rooksCastleBlack[1], preventCheckMoves, "76", "75");
         }
 
         preventCheckMoves = preventCheckMoves.filter(item => item !== "");
@@ -173,19 +177,23 @@ function Provider({ children }) {
               newAxisY = Number(chessPieceID[1]);
 
         /* watch for rook's move. if it is the first rook's move - set castle value of this rook to "false" */
-        let newCastleWhite = castleWhite !== false ? JSON.parse(JSON.stringify([...castleWhite])) : false,
-            newCastleBlack = castleBlack !== false ? JSON.parse(JSON.stringify([...castleBlack])) : false;
+        let newCastleWhite = rooksCastleWhite !== false ? [...rooksCastleWhite] : false,
+            newCastleBlack = rooksCastleBlack !== false ? [...rooksCastleBlack] : false;
         if (pieceName === 'R') {
             if (pieceID === '00') {
-                setCastleWhite(newCastleWhite !== false ? newCastleWhite[0] = false : false);
+                newCastleWhite[0] = false;
+                setRooksCastleWhite(newCastleWhite);
             } else if (pieceID === '07') {
-                setCastleWhite(newCastleWhite !== false ? newCastleWhite[1] = false : false);
+                newCastleWhite[1] = false;
+                setRooksCastleWhite(newCastleWhite);
             }
         } else if (pieceName === "r") {
             if (pieceID === '70') {
-                setCastleBlack(newCastleBlack !== false ? newCastleBlack[0] = false : false);
+                newCastleBlack[0] = false;
+                setRooksCastleWhite(newCastleWhite);
             } else if (pieceID === '77') {
-                setCastleBlack(newCastleBlack !== false ? newCastleBlack[1] = false : false);
+                newCastleBlack[1] = false;
+                setRooksCastleBlack(newCastleBlack);
             }
         }
 
@@ -216,19 +224,22 @@ function Provider({ children }) {
         }
 
         /* finish castling at newBoard */
-        if (pieceName === 'K' && castleWhite !== false) {
-            if (chessPieceID === '01') {newBoard[0][2].f = newBoard[0][0].f; newBoard[0][0].f = '';} 
-            if (chessPieceID === '05') {newBoard[0][4].f = newBoard[0][7].f; newBoard[0][7].f = '';} 
+        if (pieceName === 'K' && setRooksCastleWhite !== false) {
+            if (chessPieceID === '02') {newBoard[0][3].f = newBoard[0][0].f; newBoard[0][0].f = '';} 
+            if (chessPieceID === '06') {newBoard[0][5].f = newBoard[0][7].f; newBoard[0][7].f = '';} 
             setBoard(newBoard);
         } else 
-        if (pieceName === 'k' && castleBlack !== false) {
-            if (chessPieceID === '71') {newBoard[7][2].f = newBoard[7][0].f; newBoard[7][0].f = '';} 
-            if (chessPieceID === '75') {newBoard[7][4].f = newBoard[7][7].f; newBoard[7][7].f = '';}
+        if (pieceName === 'k' && setRooksCastleBlack !== false) {
+            if (chessPieceID === '72') {newBoard[7][3].f = newBoard[7][0].f; newBoard[7][0].f = '';} 
+            if (chessPieceID === '76') {newBoard[7][5].f = newBoard[7][7].f; newBoard[7][7].f = '';}
             setBoard(newBoard); 
         }
         else {
             setBoard(newBoard);
         }
+
+        /* responsible for highlighting a move */
+        setMove([pieceID, chessPieceID]);
 
         /* Pawn Promotion */
         if (pieceName === 'P' && newAxisX === 7) {
@@ -244,8 +255,9 @@ function Provider({ children }) {
         */
         setCheck(!order ? isCheck('K', whiteKing, newBoard) : isCheck('k', blackKing, newBoard));
 
-        /* responsible for highlighting a move */
-        setHighligh([pieceID, chessPieceID]);
+        /* responsible for storage a move history */
+        moveNotation([pieceID, chessPieceID], newBoard, counter);
+        setCounter(counter + 1);
 
         /* after move - change order */
         setOrder(!order);
@@ -269,6 +281,9 @@ function Provider({ children }) {
         setBoard(newBoard);
         setPromotion(false);
         setCheck(!order ? isCheck('K', whiteKing, newBoard) : isCheck('k', blackKing, newBoard));
+        /* responsible for storage a move history */
+        moveNotation(move, newBoard, counter);
+        setCounter(counter + 1);
         setOrder(!order);
     }
 
@@ -284,7 +299,7 @@ function Provider({ children }) {
                 escapeCheckmate.push(algorithmSelection(square.f, xy));
             }
         }));
-        if (escapeCheckmate.flat().length === 0) setCheckmate(true);
+        if (escapeCheckmate.flat().length === 0) {setCheckmate(true); sessionStorage.clear();};
     }
 
     /* if king was checked - function isCheckmate will be triggered */
@@ -308,13 +323,15 @@ function Provider({ children }) {
         setBoard(boardTemplate);
         setWhiteKingID();
         setBlackKingID();
-        setCastleWhite([true, true]);
-        setCastleBlack([true, true]);
+        setRooksCastleWhite([true, true]);
+        setRooksCastleBlack([true, true]);
         setCheck(false);
         setCheckmate(false);
         setOrder(true);
-        setHighligh([]);
+        setMove([]);
         setPassant([false, '']);
+        setCounter(1);
+        sessionStorage.clear()
     }
 
     useEffect(() => {
@@ -322,7 +339,7 @@ function Provider({ children }) {
     }, [board]);
 
     return (
-        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setCastleWhite, setCastleBlack, promotion, getPromotedPiece, checkmate, setCheckmate, restart, highlight}}>
+        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setRooksCastleWhite, setRooksCastleBlack, promotion, getPromotedPiece, checkmate, setCheckmate, restart, move}}>
             {children}
         </ChessContext.Provider>
     )
