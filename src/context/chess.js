@@ -177,25 +177,27 @@ function Provider({ children }) {
               newAxisY = Number(chessPieceID[1]);
 
         /* watch for rook's move. if it is the first rook's move - set castle value of this rook to "false" */
-        let newCastleWhite = rooksCastleWhite !== false ? [...rooksCastleWhite] : false,
-            newCastleBlack = rooksCastleBlack !== false ? [...rooksCastleBlack] : false;
-        if (pieceName === 'R') {
-            if (pieceID === '00') {
-                newCastleWhite[0] = false;
-                setRooksCastleWhite(newCastleWhite);
-            } else if (pieceID === '07') {
-                newCastleWhite[1] = false;
-                setRooksCastleWhite(newCastleWhite);
+        if (rooksCastleWhite !== false && rooksCastleBlack !== false) {
+            let newCastleWhite = [...rooksCastleWhite],
+                newCastleBlack = [...rooksCastleBlack];
+            if (pieceName === 'R') {
+                if (pieceID === '00') {
+                    newCastleWhite[0] = false;
+                    setRooksCastleWhite(newCastleWhite);
+                } else if (pieceID === '07') {
+                    newCastleWhite[1] = false;
+                    setRooksCastleWhite(newCastleWhite);
+                }
+            } else if (pieceName === "r") {
+                if (pieceID === '70') {
+                    newCastleBlack[0] = false;
+                    setRooksCastleWhite(newCastleWhite);
+                } else if (pieceID === '77') {
+                    newCastleBlack[1] = false;
+                    setRooksCastleBlack(newCastleBlack);
+                }
             }
-        } else if (pieceName === "r") {
-            if (pieceID === '70') {
-                newCastleBlack[0] = false;
-                setRooksCastleWhite(newCastleWhite);
-            } else if (pieceID === '77') {
-                newCastleBlack[1] = false;
-                setRooksCastleBlack(newCastleBlack);
-            }
-        }
+        }        
 
         let newBoard = JSON.parse(JSON.stringify([...board]));
         newBoard[newAxisX][newAxisY].f = newBoard[oldAxisX][oldAxisY].f;
