@@ -135,15 +135,28 @@
  /* -------------------------------------------------------------------------------------------------------- */
 @media (max-width: 575px) {
     .app {
-        flex-direction: column-reverse;
+        flex-direction: column;
         height: 100vh;
         justify-self: center;
+        justify-content: center;
     }
 
     .sidebar {
-        height: 100px;
+        height: 130px;
         width: 50%;
+        margin-top: 30px;
         margin-left: 30px;
+        &-list {
+            &_item {
+                margin-top: 5px;
+            }
+        }
+
+        .history {
+            width: 55%;
+            height: 100%;
+        }
+
         &::before {
             height: 100%;
             border-right: none;
