@@ -43,6 +43,11 @@ function App() {
 		setRotate(!rotate);
 	}
 
+	const onRestart = () => {
+		setShowOldBoard(false);
+		restart();
+	}
+
 	/* take keys of moves history from sessionStorage and parse into a <div "history-inner"></div> */
 	useEffect(() => {
 		let keys = Object.keys(sessionStorage);
@@ -96,7 +101,7 @@ function App() {
 								className={`sidebar-list_item ${showChessNotation ? 'sidebar-list_item_active' : ''}`}>
 								{showChessNotation ? 'Hide move history' : 'Show move history'}
 							</li>
-							<li className="sidebar-list_item" onClick={restart}>
+							<li className="sidebar-list_item" onClick={onRestart}>
 								Restart game
 							</li>
 						</ul>
