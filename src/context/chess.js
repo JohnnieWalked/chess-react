@@ -226,12 +226,12 @@ function Provider({ children }) {
         }
 
         /* finish castling at newBoard */
-        if (pieceName === 'K' && setRooksCastleWhite !== false) {
+        if (pieceName === 'K' && rooksCastleWhite !== false) {
             if (chessPieceID === '02') {newBoard[0][3].f = newBoard[0][0].f; newBoard[0][0].f = '';} 
             if (chessPieceID === '06') {newBoard[0][5].f = newBoard[0][7].f; newBoard[0][7].f = '';} 
             setBoard(newBoard);
         } else 
-        if (pieceName === 'k' && setRooksCastleBlack !== false) {
+        if (pieceName === 'k' && rooksCastleBlack !== false) {
             if (chessPieceID === '72') {newBoard[7][3].f = newBoard[7][0].f; newBoard[7][0].f = '';} 
             if (chessPieceID === '76') {newBoard[7][5].f = newBoard[7][7].f; newBoard[7][7].f = '';}
             setBoard(newBoard); 
