@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/chess-react/static/css/main.a2785a11.css",
-    "main.js": "/chess-react/static/js/main.9a21723d.js",
+    "main.js": "/chess-react/static/js/main.5001297d.js",
     "static/media/night2.webp": "/chess-react/static/media/night2.b044d9a9496f45c98f0b.webp",
     "static/media/avatar.png": "/chess-react/static/media/avatar.1087e37ffaff635c9742.png",
     "static/media/Futura-condensed-medium.otf": "/chess-react/static/media/Futura-condensed-medium.2f73dbcc8ae98e67cb5b.otf",
@@ -10,10 +10,10 @@
     "static/media/logo-skyrim.png": "/chess-react/static/media/logo-skyrim.b19c5df5f611b2a8ffdb.png",
     "index.html": "/chess-react/index.html",
     "main.a2785a11.css.map": "/chess-react/static/css/main.a2785a11.css.map",
-    "main.9a21723d.js.map": "/chess-react/static/js/main.9a21723d.js.map"
+    "main.5001297d.js.map": "/chess-react/static/js/main.5001297d.js.map"
   },
   "entrypoints": [
     "static/css/main.a2785a11.css",
-    "static/js/main.9a21723d.js"
+    "static/js/main.5001297d.js"
   ]
 }
