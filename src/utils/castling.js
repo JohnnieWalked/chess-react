@@ -27,21 +27,26 @@ function castleWays(item, axisX, axisY, board, isCastle, i) {
     if (item === "K" || item === "k") {
         if (isCastle) {
             if (i < 0) {
-                if (pushMove(item, board, axisX, axisY, 0, -1) !== undefined && board[axisX][axisY - 3].f === "" ) {
+                if (pushMove(item, board, axisX, axisY, 0, -1) !== undefined 
+                    && !/[a-z,A-Z]/.test(board[axisX][axisY - 2].f)
+                    && board[axisX][axisY - 3].f === "") {
                     for (let j = -1; j > -3; j--) {
                         possibleMovement.push(pushMove(item, board, axisX, axisY, 0, j));
                     }
                 } else {
                     possibleMovement.push(pushMove(item, board, axisX, axisY, 0, i));
                 }
-            }
+            } 
             if (i > 0) {
-                if (pushMove(item, board, axisX, axisY, 0, 1) !== undefined) {
+                if (pushMove(item, board, axisX, axisY, 0, 1) !== undefined 
+                    && !/[a-z,A-Z]/.test(board[axisX][axisY + 2].f)) {
                     for (let j = 1; j < 3; j++) {
                         possibleMovement.push(pushMove(item, board, axisX, axisY, 0, j));
                     }
+                } else {
+                    possibleMovement.push(pushMove(item, board, axisX, axisY, 0, i));
                 }
-            }
+            } 
         } else {
             possibleMovement.push(pushMove(item, board, axisX, axisY, 0, i));
         }
