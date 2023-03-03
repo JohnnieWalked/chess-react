@@ -1,6 +1,6 @@
 /* 
     If possible move does NOT go beyond the chessboard
-    and does NOT collide with allied piece it will return 'true', else - 'false' 
+    and does NOT collide with allied piece it will return 'true', else - 'undefined' 
 */
 const checkPossibleMove = (shiftX, shiftY, board, axisX, axisY, regExp) => {
     return board[axisX + shiftX] !== undefined && board[axisY + shiftY] !== undefined 

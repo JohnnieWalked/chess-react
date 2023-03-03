@@ -34,6 +34,7 @@ const boardTemplate = [
 
 function Provider({ children }) {
 
+    /* responsible for numbering in move notation */
     const [counter, setCounter] = useState(1);
 
     /* chess field (white - capital letters, black - small) */
