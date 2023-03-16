@@ -8,7 +8,7 @@ import "./chessBoard.scss";
 
 
 function ChessBoard({ rotate, oldBoard, showOldBoard, coordinates }) {
-    const { board, pieceID, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, promotion, getPromotedPiece, checkmate, setCheckmate, restart, move } = useChessContext();
+    const { board, pieceID, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, promotion, getPromotedPiece, end, setEnd, restart, move } = useChessContext();
 
     /* part of rotate animation */
     const [show, setShow] = useState(true);
@@ -49,6 +49,7 @@ function ChessBoard({ rotate, oldBoard, showOldBoard, coordinates }) {
         return [`${oldRow}` + `${oldCol}`, `${currRow}` + `${currCol}`];
     }
 
+    /* helper function for 'fromE2E4toXY'. receives a letter and returns an index of this letter in the array */
     const fromE2E4toXYHelper = (item) => {
         const coordinatesTemplate = ['a', 'b', 'c', 'd', 'e', 'f', 'j', 'h'];
         for (let i = 0; i < coordinatesTemplate.length; i++) {
@@ -62,15 +63,15 @@ function ChessBoard({ rotate, oldBoard, showOldBoard, coordinates }) {
         return board.map((item, rowIndex) => {
             return (
                 <div className={`board-row grid grid-cols-8 relative 
-                    ${promotion || checkmate || showOldBoard ? "pointer-events-none" : 'pointer-events-auto'}`} 
+                    ${promotion || end || showOldBoard ? "pointer-events-none" : 'pointer-events-auto'}`} 
                     key={rowIndex} 
                     onClick={(e) => getPiece(e.target)}
                 > 
                     {item.map((square, colIndex) => {
                         let id = [rowIndex]+[colIndex];
-                        if (coordinates) fromE2E4toXY(coordinates);
                         return (
-                            <ChessSquare 
+                            <ChessSquare
+                                oldBoard={board} 
                                 key={id} 
                                 id={id} 
                                 square={square} 
@@ -105,15 +106,15 @@ function ChessBoard({ rotate, oldBoard, showOldBoard, coordinates }) {
                     {showOldBoard ? renderBoard(oldBoard).reverse() : renderBoard(board).reverse()}
                 </div>
                 <div className={`absolute w-full h-full top-0 flex self-center justify-center`}>
-                    {checkmate ? 
+                    {end ? 
                         <Modal> 
                             <div className="modal_header tracking-[0.045rem]">
-                                {!order ? "White wins" : "Black wins"}
+                                {end !== true ? 'Stalemate' : !order ? "White wins" : "Black wins"}
                                 <div className="">Rematch?</div>
                             </div>
                             <div className="modal_content mt-12 flex w-1/2 justify-around z-10">
                                 <span className="choice" onClick={restart}>Yes</span>
-                                <span className="choice" onClick={() => setCheckmate(false)}>No</span>
+                                <span className="choice" onClick={() => setEnd(false)}>No</span>
                             </div>
                         </Modal> 
                     : null}

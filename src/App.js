@@ -27,7 +27,9 @@ function App() {
 	/* clears sessionStorage before loading a page */
 	useEffect(() => {
 		window.addEventListener("beforeunload", sessionStorage.clear());
-		window.removeEventListener("beforeunload", sessionStorage.clear());
+		return () => {
+			window.removeEventListener("beforeunload", sessionStorage.clear());
+		}
 	  }, []);
 
 	/* takes a board from sessionStorage and updates state */
@@ -106,10 +108,9 @@ function App() {
 							</li>
 						</ul>
 
-						<div className={
-								`history
-								${showChessNotation ? 'history_show' : ''} 
-								${showChessNotation === false ? 'history_hide' : ''}`}>
+						<div className={ `history
+										${showChessNotation ? 'history_show' : ''} 
+										${showChessNotation === false ? 'history_hide' : ''}`}>
 							<div className="history-inner">
 								{renderMoves}
 							</div>

@@ -11,7 +11,7 @@ import moveNotation from "../utils/moveNotation";
 
 const ChessContext = createContext();
 
-const boardTemplate = [
+const BOARD_TEMPLATE = [
     [{c: 0, f: 'R'}, {c: 1, f: 'N'}, {c: 0, f: 'B'}, {c: 1, f: 'Q'},
     {c: 0, f: 'K'}, {c: 1, f: 'B'}, {c: 0, f: 'N'}, {c: 1, f: 'R'}],
     [{c: 1, f: 'P'}, {c: 0, f: 'P'}, {c: 1, f: 'P'}, {c: 0, f: 'P'}, 
@@ -39,7 +39,7 @@ function Provider({ children }) {
 
     /* chess field (white - capital letters, black - small) */
     /* First parameter - row, second - column */
-    const [board, setBoard] = useState(boardTemplate);
+    const [board, setBoard] = useState(BOARD_TEMPLATE);
 
     /* watch kings locations (id) */
     const [whiteKing, setWhiteKingID] = useState();
@@ -53,8 +53,8 @@ function Provider({ children }) {
     /* resposible for showing a check */
     const [check, setCheck] = useState(false);
 
-    /* responsible for showing a checkmate */
-    const [checkmate, setCheckmate] = useState(false);
+    /* responsible for showing a checkmate or stalemate */
+    const [end, setEnd] = useState(false);
 
     /* Responsible for showing possible paths */
     const [showPossibleWays, setShowPossibleWays] = useState([]);
@@ -102,9 +102,9 @@ function Provider({ children }) {
     };
 
     useEffect(() => {
-        console.log("ALGO SELECTED");
+        // console.log('algorithm selection...');
         algorithmSelection(pieceName, pieceID);
-    }, [pieceID]);
+    }, [pieceName, pieceID]);
 
     /* preventCheck() sorts possible movements to avoid the check */
     const preventCheck = (pieceName, pieceID, possibleWays) => {
@@ -165,13 +165,13 @@ function Provider({ children }) {
 
         preventCheckMoves = preventCheckMoves.filter(item => item !== "");
 
-        console.log('preventCheck', preventCheckMoves);
+        // console.log('preventCheck', preventCheckMoves);
         setShowPossibleWays(preventCheckMoves);
         return preventCheckMoves;
     }
 
     const movePiece = (chessPieceID) => {
-        console.log("MOVE PIECE");
+        // console.log("MOVE PIECE");
         const oldAxisX = Number(pieceID[0]),
               oldAxisY = Number(pieceID[1]),
               newAxisX = Number(chessPieceID[0]),
@@ -192,7 +192,7 @@ function Provider({ children }) {
             } else if (pieceName === "r") {
                 if (pieceID === '70') {
                     newCastleBlack[0] = false;
-                    setRooksCastleWhite(newCastleWhite);
+                    setRooksCastleBlack(newCastleBlack);
                 } else if (pieceID === '77') {
                     newCastleBlack[1] = false;
                     setRooksCastleBlack(newCastleBlack);
@@ -291,45 +291,49 @@ function Provider({ children }) {
     }
 
     /* 
-    responsible for calculating a checkmate; isCheckmate() looks through a board and 
-        finds all moves to prevent check; if array of moves is empty - means checkmate   
+    responsible for calculating a checkmate and stalemate; endGame() looks through a board and 
+        finds all moves to prevent check; if array of moves is empty and check is TRUE - means checkmate;
+        else if check is FALSE - means stalemate  
     */
-    const isCheckmate = (board, reg) => {
-        const escapeCheckmate = [];
+    const endGame = (board, reg) => {
+        const possibleMoves = [];
         board.forEach((row, rowIndex) => row.forEach((square, colIndex) => {
             if (reg.test(square.f)) {
                 let xy = [rowIndex]+[colIndex];
-                escapeCheckmate.push(algorithmSelection(square.f, xy));
+                possibleMoves.push(algorithmSelection(square.f, xy));
             }
         }));
-        if (escapeCheckmate.flat().length === 0) {setCheckmate(true); sessionStorage.clear();};
+        if (check && possibleMoves.flat().length === 0) setEnd(true);
+        if (!check && possibleMoves.flat().length === 0) setEnd('Stalemate');
     }
 
-    /* if king was checked - function isCheckmate will be triggered */
+    /* if king was checked - function endGame will be triggered */
     useEffect(() => {
         if (!order && check) {
-            isCheckmate(board, /[a-z]/);
+            endGame(board, /[a-z]/);
         } else if (order && check) {
-            isCheckmate(board, /[A-Z]/);
+            endGame(board, /[A-Z]/);
         }
-    }, [check])
+    }, [check, order])
 
     function clearState() {
-        console.log("CLEAR STATE");
         setPieceID('');
         setPieceName('');
         setShowPossibleWays([]);
     }
 
+    useEffect(() => {
+        // console.log('clear state');
+        clearState();
+    }, [board]);
+
     function restart() {
         clearState();
-        setBoard(boardTemplate);
-        setWhiteKingID();
-        setBlackKingID();
+        setBoard(BOARD_TEMPLATE);
         setRooksCastleWhite([true, true]);
         setRooksCastleBlack([true, true]);
         setCheck(false);
-        setCheckmate(false);
+        setEnd(false);
         setOrder(true);
         setMove([]);
         setPassant([false, '']);
@@ -337,12 +341,8 @@ function Provider({ children }) {
         sessionStorage.clear()
     }
 
-    useEffect(() => {
-        clearState();
-    }, [board]);
-
     return (
-        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setRooksCastleWhite, setRooksCastleBlack, promotion, getPromotedPiece, checkmate, setCheckmate, restart, move}}>
+        <ChessContext.Provider value={{board, setBoard, pieceID, pieceName, setPieceID, setPieceName, showPossibleWays, movePiece, clearState, order, setWhiteKingID, setBlackKingID, whiteKing, blackKing, check, setRooksCastleWhite, setRooksCastleBlack, promotion, getPromotedPiece, end, setEnd, restart, move, endGame, isCheck}}>
             {children}
         </ChessContext.Provider>
     )

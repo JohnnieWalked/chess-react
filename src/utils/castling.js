@@ -51,7 +51,7 @@ function castleWays(item, axisX, axisY, board, isCastle, i) {
             possibleMovement.push(pushMove(item, board, axisX, axisY, 0, i));
         }
     }
-    console.log("castleMove or just a move", possibleMovement);
+    // console.log("castleMove or just a move", possibleMovement);
     if (possibleMovement.some(item => item === true)) return true;
     return possibleMovement;
 }
