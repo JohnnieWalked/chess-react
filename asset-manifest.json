@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/chess-react/static/css/main.a2785a11.css",
-    "main.js": "/chess-react/static/js/main.70b6c5eb.js",
+    "main.css": "/chess-react/static/css/main.0f30d6ee.css",
+    "main.js": "/chess-react/static/js/main.03373757.js",
     "static/media/night2.webp": "/chess-react/static/media/night2.b044d9a9496f45c98f0b.webp",
     "static/media/avatar.png": "/chess-react/static/media/avatar.1087e37ffaff635c9742.png",
     "static/media/Futura-condensed-medium.otf": "/chess-react/static/media/Futura-condensed-medium.2f73dbcc8ae98e67cb5b.otf",
@@ -9,11 +9,11 @@
     "static/media/promotionBar.webp": "/chess-react/static/media/promotionBar.0fbd822fca2ccd98b425.webp",
     "static/media/logo-skyrim.png": "/chess-react/static/media/logo-skyrim.b19c5df5f611b2a8ffdb.png",
     "index.html": "/chess-react/index.html",
-    "main.a2785a11.css.map": "/chess-react/static/css/main.a2785a11.css.map",
-    "main.70b6c5eb.js.map": "/chess-react/static/js/main.70b6c5eb.js.map"
+    "main.0f30d6ee.css.map": "/chess-react/static/css/main.0f30d6ee.css.map",
+    "main.03373757.js.map": "/chess-react/static/js/main.03373757.js.map"
   },
   "entrypoints": [
-    "static/css/main.a2785a11.css",
-    "static/js/main.70b6c5eb.js"
+    "static/css/main.0f30d6ee.css",
+    "static/js/main.03373757.js"
   ]
 }
