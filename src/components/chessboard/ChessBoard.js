@@ -18,7 +18,7 @@ function ChessBoard({ rotate, oldBoard, showOldBoard, coordinates }) {
 
     /* Gets the square component and is responsible for its movement, also allows you to cancel the move and responsible for player's order */
     const getPiece = (chessPiece) => {
-        console.log("GET PIECE");
+        // console.log("GET PIECE");
         let pieceTargetName = chessPiece.firstChild.innerHTML;
         if (pieceID === "" && pieceTargetName === "") return;
         if (pieceID !== "" && pieceTargetName === "") clearState(); 

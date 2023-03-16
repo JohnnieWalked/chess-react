@@ -307,14 +307,14 @@ function Provider({ children }) {
         if (!check && possibleMoves.flat().length === 0) setEnd('Stalemate');
     }
 
-    /* if king was checked - function endGame will be triggered */
+    /* checks for stalemate and checkmate. trigger by any move on the chessboard */
     useEffect(() => {
-        if (!order && check) {
+        if (!order) {
             endGame(board, /[a-z]/);
-        } else if (order && check) {
+        } else if (order) {
             endGame(board, /[A-Z]/);
         }
-    }, [check, order])
+    }, [order])
 
     function clearState() {
         setPieceID('');
